@@ -26,7 +26,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Include="..\..\..\..\OneDrive\Dropbox\Our World\Logo\STAR\STARJPG.JPG">
+    <None Include="..\..\..\..\..\OneDrive\Dropbox\Our World\Logo\STAR\STARJPG.JPG">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>

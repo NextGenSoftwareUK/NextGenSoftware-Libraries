@@ -87,5 +87,10 @@ namespace NextGenSoftware.Logging
                 }
             }
         }
+
+        public void Shutdown()
+        {
+            //Not needed for DefaultLogger.
+        }
     }
 }
