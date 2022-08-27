@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-	  <PackageId>NextGenSoftware.Logging.Nlog</PackageId>
+	  <PackageId>NextGenSoftware.Logging.NLog</PackageId>
 	  <Company>NextGen Software Ltd</Company>
 	  <Product>NextGen Software Logging NLog Extention</Product>
 	  <Title>NextGen Software Logging NLog Extention</Title>

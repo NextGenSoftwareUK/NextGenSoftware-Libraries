@@ -4,9 +4,12 @@ using System.Collections.Generic;
 
 namespace NextGenSoftware.Logging
 {
-    public static class Logging
+    public static class Logger
     {
         public static List<ILogger> Loggers { get; set; } = new List<ILogger>();
+
+        //public delegate void Error(object sender, LoggingErrorEventArgs e);
+        //public static event Error OnError;
 
         public static void Log(string message, LogType type)
         {

@@ -14,6 +14,11 @@ namespace NextGenSoftware.CLI.Engine
         public static ConsoleColor MessageColour { get; set; } = ConsoleColor.Yellow;
         public static ConsoleColor WorkingMessageColour { get; set; } = ConsoleColor.Yellow;
 
+        public static ErrorHandlingBehaviour ErrorHandlingBehaviour { get; set; } = ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent;
+
+        public delegate void Error(object sender, CLIEngineErrorEventArgs e);
+        public static event Error OnError;
+
         public static void WriteAsciMessage(string message, Color color)
         {
             Colorful.Console.WriteAscii(message, color);
@@ -21,29 +26,36 @@ namespace NextGenSoftware.CLI.Engine
 
         public static void ShowColoursAvailable()
         {
-            ShowMessage("", false);
-            ConsoleColor oldColour = Console.ForegroundColor;
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write(" Sorry, that colour is not valid. Please try again. The colour needs to be one of the following: ");
-
-            string[] values = Enum.GetNames(typeof(ConsoleColor));
-
-            for (int i = 0; i < values.Length; i++)
+            try
             {
-                if (values[i] != "Black")
+                ShowMessage("", false);
+                ConsoleColor oldColour = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write(" Sorry, that colour is not valid. Please try again. The colour needs to be one of the following: ");
+
+                string[] values = Enum.GetNames(typeof(ConsoleColor));
+
+                for (int i = 0; i < values.Length; i++)
                 {
-                    PrintColour(values[i]);
+                    if (values[i] != "Black")
+                    {
+                        PrintColour(values[i]);
 
-                    if (i < values.Length - 2)
-                        Console.Write(", ");
+                        if (i < values.Length - 2)
+                            Console.Write(", ");
 
-                    else if (i == values.Length - 2)
-                        Console.Write(" or ");
+                        else if (i == values.Length - 2)
+                            Console.Write(" or ");
+                    }
                 }
-            }
 
-            ShowMessage("", false);
-            Console.ForegroundColor = oldColour;
+                ShowMessage("", false);
+                Console.ForegroundColor = oldColour;
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.ShowColoursAvailable method.", ex);
+            }
         }
 
         public static void PrintColour(string colour)
@@ -64,46 +76,74 @@ namespace NextGenSoftware.CLI.Engine
 
         public static void ShowMessage(string message, ConsoleColor color, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1)
         {
-            ConsoleColor existingColour = Console.ForegroundColor;
-            Console.ForegroundColor = color;
-            //ShowMessage(message, lineSpace, noLineBreaks, intendBy);
-
-            if (Spinner.IsActive)
+            try
             {
-                Spinner.Stop();
-                Console.WriteLine("");
+                ConsoleColor existingColour = Console.ForegroundColor;
+                Console.ForegroundColor = color;
+                //ShowMessage(message, lineSpace, noLineBreaks, intendBy);
+
+                if (Spinner.IsActive)
+                {
+                    Spinner.Stop();
+                    Console.WriteLine("");
+                }
+
+                if (lineSpace)
+                    Console.WriteLine(" ");
+
+                string indent = "";
+                for (int i = 0; i < intendBy; i++)
+                    indent = string.Concat(indent, " ");
+
+                if (noLineBreaks)
+                    Console.Write(string.Concat(indent, message));
+                else
+                    Console.WriteLine(string.Concat(indent, message));
+
+                Console.ForegroundColor = existingColour;
             }
-
-            if (lineSpace)
-                Console.WriteLine(" ");
-
-            string indent = "";
-            for (int i = 0; i < intendBy; i++)
-                indent = string.Concat(indent, " ");
-
-            if (noLineBreaks)
-                Console.Write(string.Concat(indent, message));
-            else
-                Console.WriteLine(string.Concat(indent, message));
-
-            Console.ForegroundColor = existingColour;
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.ShowMessage method.", ex);
+            }
         }
 
         public static void ShowWorkingMessage(string message, bool lineSpace = true, int intendBy = 1)
         {
-            ShowMessage(message, WorkingMessageColour, lineSpace, true, intendBy);
-            Spinner.Start();
+            try
+            {
+                ShowMessage(message, WorkingMessageColour, lineSpace, true, intendBy);
+                Spinner.Start();
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.ShowWorkingMessage method.", ex);
+            }
         }
 
         public static void ShowWorkingMessage(string message, ConsoleColor color, bool lineSpace = true, int intendBy = 1)
         {
-            ShowMessage(message, color, lineSpace, true, intendBy);
-            Spinner.Start();
+            try
+            {
+                ShowMessage(message, color, lineSpace, true, intendBy);
+                Spinner.Start();
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.ShowWorkingMessage method.", ex);
+            }
         }
 
         public static void ShowErrorMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1)
         {
-            ShowMessage(message, ErrorMessageColour, lineSpace, noLineBreak, intendBy);
+            try
+            {
+                ShowMessage(message, ErrorMessageColour, lineSpace, noLineBreak, intendBy);
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.ShowErrorMessage method.", ex);
+            }
         }
 
         public static string GetValidTitle(string message)
@@ -112,16 +152,23 @@ namespace NextGenSoftware.CLI.Engine
             //string[] validTitles = new string[5] { "Mr", "Mrs", "Ms", "Miss", "Dr" };
             string validTitles = "MR,MRS,MS,MISS,DR";
 
-            bool titleValid = false;
-            while (!titleValid)
+            try
             {
-                if (!validTitles.Contains(title))
+                bool titleValid = false;
+                while (!titleValid)
                 {
-                    ShowErrorMessage("Title invalid. Please try again.");
-                    title = GetValidInput(message).ToUpper();
+                    if (!validTitles.Contains(title))
+                    {
+                        ShowErrorMessage("Title invalid. Please try again.");
+                        title = GetValidInput(message).ToUpper();
+                    }
+                    else
+                        titleValid = true;
                 }
-                else
-                    titleValid = true;
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidTitle method.", ex);
             }
 
             return ExtensionMethods.ToPascalCase(title);
@@ -130,10 +177,18 @@ namespace NextGenSoftware.CLI.Engine
         public static string GetValidInput(string message)
         {
             string input = "";
-            while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+
+            try
             {
-                ShowMessage(string.Concat("", message), true, true);
-                input = Console.ReadLine();
+                while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                {
+                    ShowMessage(string.Concat("", message), true, true);
+                    input = Console.ReadLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInput method.", ex);
             }
 
             return input;
@@ -144,23 +199,31 @@ namespace NextGenSoftware.CLI.Engine
             bool validKey = false;
             bool confirm = false;
 
-            while (!validKey)
+            try
             {
-                //ShowMessage("", false);
-                ShowMessage(message, true, true);
-                ConsoleKey key = Console.ReadKey().Key;
-
-                if (key == ConsoleKey.Y)
+                while (!validKey)
                 {
-                    confirm = true;
-                    validKey = true;
+                    //ShowMessage("", false);
+                    ShowMessage(message, true, true);
+                    ConsoleKey key = Console.ReadKey().Key;
+
+                    if (key == ConsoleKey.Y)
+                    {
+                        confirm = true;
+                        validKey = true;
+                    }
+
+                    if (key == ConsoleKey.N)
+                    {
+                        confirm = false;
+                        validKey = true;
+                    }
                 }
 
-                if (key == ConsoleKey.N)
-                {
-                    confirm = false;
-                    validKey = true;
-                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInput method.", ex);
             }
 
             return confirm;
@@ -206,15 +269,23 @@ namespace NextGenSoftware.CLI.Engine
         {
             string password = "";
             string password2 = "";
-            ShowMessage("", false);
 
-            while ((string.IsNullOrEmpty(password) && string.IsNullOrEmpty(password2)) || password != password2)
+            try
             {
-                password = ReadPassword("What is the password you wish to use? ");
-                password2 = ReadPassword("Please confirm password: ");
+                ShowMessage("", false);
 
-                if (password != password2)
-                    ShowErrorMessage("The passwords do not match. Please try again.");
+                while ((string.IsNullOrEmpty(password) && string.IsNullOrEmpty(password2)) || password != password2)
+                {
+                    password = ReadPassword("What is the password you wish to use? ");
+                    password2 = ReadPassword("Please confirm password: ");
+
+                    if (password != password2)
+                        ShowErrorMessage("The passwords do not match. Please try again.");
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidPassword method.", ex);
             }
 
             return password;
@@ -225,28 +296,35 @@ namespace NextGenSoftware.CLI.Engine
             string password = "";
             ConsoleKey key;
 
-            while (string.IsNullOrEmpty(password) && string.IsNullOrWhiteSpace(password))
+            try
             {
-                ShowMessage(string.Concat("", message), true, true);
-
-                do
+                while (string.IsNullOrEmpty(password) && string.IsNullOrWhiteSpace(password))
                 {
-                    var keyInfo = Console.ReadKey(intercept: true);
-                    key = keyInfo.Key;
+                    ShowMessage(string.Concat("", message), true, true);
 
-                    if (key == ConsoleKey.Backspace && password.Length > 0)
+                    do
                     {
-                        Console.Write("\b \b");
-                        password = password[0..^1];
-                    }
-                    else if (!char.IsControl(keyInfo.KeyChar))
-                    {
-                        Console.Write("*");
-                        password += keyInfo.KeyChar;
-                    }
-                } while (key != ConsoleKey.Enter);
+                        var keyInfo = Console.ReadKey(intercept: true);
+                        key = keyInfo.Key;
 
-                ShowMessage("", false);
+                        if (key == ConsoleKey.Backspace && password.Length > 0)
+                        {
+                            Console.Write("\b \b");
+                            password = password[0..^1];
+                        }
+                        else if (!char.IsControl(keyInfo.KeyChar))
+                        {
+                            Console.Write("*");
+                            password += keyInfo.KeyChar;
+                        }
+                    } while (key != ConsoleKey.Enter);
+
+                    ShowMessage("", false);
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.ReadPassword method.", ex);
             }
 
             return password;
@@ -254,61 +332,68 @@ namespace NextGenSoftware.CLI.Engine
 
         public static void GetValidColour(ref ConsoleColor favColour, ref ConsoleColor cliColour)
         {
-            bool colourSet = false;
-            while (!colourSet)
+            try
             {
-                ShowMessage("What is your favourite colour? ", true, true);
-                string colour = Console.ReadLine();
-                colour = ExtensionMethods.ToPascalCase(colour);
-                //object colourObj = null;
-               // ConsoleColor colourObj;
-
-                //if (Enum.TryParse(typeof(ConsoleColor), colour, out colourObj))
-                if (Enum.TryParse(colour, out favColour))
+                bool colourSet = false;
+                while (!colourSet)
                 {
-                   // favColour = (ConsoleColor)colourObj;
-                    Console.ForegroundColor = favColour;
-                    ShowMessage("Do you prefer to use your favourite colour? :) ", true, true);
+                    ShowMessage("What is your favourite colour? ", true, true);
+                    string colour = Console.ReadLine();
+                    colour = ExtensionMethods.ToPascalCase(colour);
+                    //object colourObj = null;
+                    // ConsoleColor colourObj;
 
-                    if (Console.ReadKey().Key != ConsoleKey.Y)
+                    //if (Enum.TryParse(typeof(ConsoleColor), colour, out colourObj))
+                    if (Enum.TryParse(colour, out favColour))
                     {
-                        Console.WriteLine("");
+                        // favColour = (ConsoleColor)colourObj;
+                        Console.ForegroundColor = favColour;
+                        ShowMessage("Do you prefer to use your favourite colour? :) ", true, true);
 
-                        while (!colourSet)
+                        if (Console.ReadKey().Key != ConsoleKey.Y)
                         {
-                            //Defaults
-                            Console.ForegroundColor = ConsoleColor.Yellow;
-                            Spinner.Colour = ConsoleColor.Green;
+                            Console.WriteLine("");
 
-                            ShowMessage("Which colour would you prefer? ", true, true);
-                            colour = Console.ReadLine();
-                            colour = ExtensionMethods.ToPascalCase(colour);
-                            //colourObj = null;
-
-                            //if (Enum.TryParse(typeof(ConsoleColor), colour, out colourObj))
-                            if (Enum.TryParse(colour, out cliColour))
+                            while (!colourSet)
                             {
-                                //cliColour = (ConsoleColor)colourObj;
-                                Console.ForegroundColor = cliColour;
-                                Spinner.Colour = cliColour;
+                                //Defaults
+                                Console.ForegroundColor = ConsoleColor.Yellow;
+                                Spinner.Colour = ConsoleColor.Green;
 
-                                // ShowMessage("", false);
-                                ShowMessage("This colour ok? ", true, true);
+                                ShowMessage("Which colour would you prefer? ", true, true);
+                                colour = Console.ReadLine();
+                                colour = ExtensionMethods.ToPascalCase(colour);
+                                //colourObj = null;
 
-                                if (Console.ReadKey().Key == ConsoleKey.Y)
-                                    colourSet = true;
+                                //if (Enum.TryParse(typeof(ConsoleColor), colour, out colourObj))
+                                if (Enum.TryParse(colour, out cliColour))
+                                {
+                                    //cliColour = (ConsoleColor)colourObj;
+                                    Console.ForegroundColor = cliColour;
+                                    Spinner.Colour = cliColour;
+
+                                    // ShowMessage("", false);
+                                    ShowMessage("This colour ok? ", true, true);
+
+                                    if (Console.ReadKey().Key == ConsoleKey.Y)
+                                        colourSet = true;
+                                    else
+                                        ShowMessage("", false);
+                                }
                                 else
-                                    ShowMessage("", false);
+                                    ShowColoursAvailable();
                             }
-                            else
-                                ShowColoursAvailable();
                         }
+                        else
+                            colourSet = true;
                     }
                     else
-                        colourSet = true;
+                        ShowColoursAvailable();
                 }
-                else
-                    ShowColoursAvailable();
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidColour method.", ex);
             }
         }
 
@@ -333,5 +418,26 @@ namespace NextGenSoftware.CLI.Engine
         //    Console.WriteLine(string.Concat(indent, message));
         //    Console.ForegroundColor = existingColour;
         //}
+
+        private static void HandleError(string message, Exception exception)
+        {
+            message = string.Concat(message, exception != null ? $". Error Details: {exception}" : "");
+            //Logging.Logging.Log(message, LogType.Error);
+
+            OnError.Invoke(null, new CLIEngineErrorEventArgs { Reason = message, ErrorDetails = exception });
+
+            switch (ErrorHandlingBehaviour)
+            {
+                case ErrorHandlingBehaviour.AlwaysThrowExceptionOnError:
+                    throw new CLIEngineException(message, exception);
+
+                case ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent:
+                    {
+                        if (OnError == null)
+                            throw new CLIEngineException(message, exception);
+                    }
+                    break;
+            }
+        }
     }
 }

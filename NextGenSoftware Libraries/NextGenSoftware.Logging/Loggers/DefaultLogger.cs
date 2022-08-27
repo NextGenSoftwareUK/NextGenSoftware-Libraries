@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using NextGenSoftware.CLI.Engine;
+using NextGenSoftware.WebSocket;
 
 namespace NextGenSoftware.Logging
 {
@@ -19,6 +20,9 @@ namespace NextGenSoftware.Logging
             ErrorColour = errorColour;
             WarningColour = warningColour;
         }
+
+        public delegate void Error(object sender, LoggingErrorEventArgs e);
+        public event Error OnError;
 
         public string LogDirectory { get; set; }
         public string LogFileName { get; set; }
@@ -60,37 +64,66 @@ namespace NextGenSoftware.Logging
 
         public void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false)
         {
-            if (Logging.ContinueLogging(type))
+            try
             {
-                string logMessage = $"{DateTime.Now} {type}: {message}";
-
-                if (AddAdditionalSpaceAfterEachLogEntry)
-                    logMessage = String.Concat(logMessage, "\n");
-
-                if (LogToConsole)
+                if (Logger.ContinueLogging(type))
                 {
-                    if (showWorkingAnimation)
-                        CLIEngine.ShowWorkingMessage(message, consoleColour, false, 0);
-                    else
-                        CLIEngine.ShowMessage(message, consoleColour, false, false, 0);
-                }
+                    string logMessage = $"{DateTime.Now} {type}: {message}";
 
-                if (LogToFile)
-                {
-                    if (!string.IsNullOrEmpty(LogDirectory) && !Directory.Exists(LogDirectory))
-                        Directory.CreateDirectory(LogDirectory);
-
-                    if (!AddAdditionalSpaceAfterEachLogEntry)
+                    if (AddAdditionalSpaceAfterEachLogEntry)
                         logMessage = String.Concat(logMessage, "\n");
 
-                    File.AppendAllText(String.Concat(LogDirectory, "\\", LogFileName), logMessage);
+                    if (LogToConsole)
+                    {
+                        if (showWorkingAnimation)
+                            CLIEngine.ShowWorkingMessage(message, consoleColour, false, 0);
+                        else
+
+                            CLIEngine.ShowMessage(message, consoleColour, false, false, 0);
+                    }
+
+                    if (LogToFile)
+                    {
+                        if (!string.IsNullOrEmpty(LogDirectory) && !Directory.Exists(LogDirectory))
+                            Directory.CreateDirectory(LogDirectory);
+
+                        if (!AddAdditionalSpaceAfterEachLogEntry)
+                            logMessage = String.Concat(logMessage, "\n");
+
+                        File.AppendAllText(String.Concat(LogDirectory, "\\", LogFileName), logMessage);
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in HoloNETClient.ShutDownConductorsInternal method.", ex);
             }
         }
 
         public void Shutdown()
         {
             //Not needed for DefaultLogger.
+        }
+
+        private void HandleError(string message, Exception exception)
+        {
+            message = string.Concat(message, exception != null ? $". Error Details: {exception}" : "");
+            //Logging.Logging.Log(message, LogType.Error);
+
+            OnError.Invoke(this, new LoggingErrorEventArgs { Reason = message, ErrorDetails = exception });
+
+            switch (LogConfig.ErrorHandlingBehaviour)
+            {
+                case ErrorHandlingBehaviour.AlwaysThrowExceptionOnError:
+                    throw new LoggingException(message, exception);
+
+                case ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent:
+                    {
+                        if (OnError == null)
+                            throw new LoggingException(message, exception);
+                    }
+                    break;
+            }
         }
     }
 }

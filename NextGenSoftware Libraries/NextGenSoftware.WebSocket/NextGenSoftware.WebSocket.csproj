@@ -13,7 +13,7 @@
 	  <PackageIcon>STARJPG.JPG</PackageIcon>
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>websocket;net;unity</PackageTags>
-	  <PackageReleaseNotes>Updated Logo.</PackageReleaseNotes>
+	  <PackageReleaseNotes>Improved error handling &amp; reporting.</PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
 	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
 	  <Copyright>Copyright © NextGen Software Ltd 2022</Copyright>
@@ -21,7 +21,7 @@
 	  <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	  <Version>1.1.2</Version>
+	  <Version>1.1.3</Version>
 	  <!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 
