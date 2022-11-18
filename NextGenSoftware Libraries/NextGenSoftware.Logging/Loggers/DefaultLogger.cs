@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Threading;
 using NextGenSoftware.CLI.Engine;
 using NextGenSoftware.WebSocket;
 
@@ -7,6 +8,9 @@ namespace NextGenSoftware.Logging
 {
     public class DefaultLogger : ILogger
     {
+        private const int NumberOfRetries = 3;
+        private const int DelayOnRetry = 1000;
+
         public DefaultLogger(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
         {
             LogDirectory = pathToLogFile;
@@ -84,19 +88,36 @@ namespace NextGenSoftware.Logging
 
                     if (LogToFile)
                     {
-                        if (!string.IsNullOrEmpty(LogDirectory) && !Directory.Exists(LogDirectory))
-                            Directory.CreateDirectory(LogDirectory);
+                        for (int i = 1; i <= NumberOfRetries; ++i)
+                        {
+                            try
+                            {
+                                if (!string.IsNullOrEmpty(LogDirectory) && !Directory.Exists(LogDirectory))
+                                    Directory.CreateDirectory(LogDirectory);
 
-                        if (!AddAdditionalSpaceAfterEachLogEntry)
-                            logMessage = String.Concat(logMessage, "\n");
+                                if (!AddAdditionalSpaceAfterEachLogEntry)
+                                    logMessage = String.Concat(logMessage, "\n");
 
-                        File.AppendAllText(String.Concat(LogDirectory, "\\", LogFileName), logMessage);
+                                //File.AppendAllText(String.Concat(LogDirectory, "\\", LogFileName), logMessage);
+
+                                using (var stream = File.Open(String.Concat(LogDirectory, "\\", LogFileName), FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write))
+                                {
+                                    using (var writer = new StreamWriter(stream))
+                                        writer.WriteLine(logMessage);
+                                }
+                                break; 
+                            }
+                            catch (IOException e) when (i <= NumberOfRetries)
+                            {
+                                Thread.Sleep(DelayOnRetry);
+                            }
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                HandleError("Error occured in HoloNETClient.ShutDownConductorsInternal method.", ex);
+                HandleError("Error occured in DefaultLogger.Log method.", ex);
             }
         }
 

@@ -30,6 +30,11 @@ namespace NextGenSoftware.WebSocket
     
     public abstract class CallBackBaseEventArgs : EventArgs
     {
+        public CallBackBaseEventArgs()
+        {
+
+        }
+
         public CallBackBaseEventArgs(string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData, WebSocketReceiveResult webSocketResult)
         {
             EndPoint = endPoint;
@@ -39,11 +44,14 @@ namespace NextGenSoftware.WebSocket
             WebSocketResult = webSocketResult;
         }
 
-        public string EndPoint { get; private set; }
-        public bool IsCallSuccessful { get; private set; }
-        public string RawJSONData { get; private set; }
-        public byte[] RawBinaryData { get; private set; }
-        public WebSocketReceiveResult WebSocketResult { get; private set; }
+        public bool IsError { get; set; }
+        public string Message { get; set; }
+        public Exception Excception { get; set; }
+        public string EndPoint { get; set; }
+        public bool IsCallSuccessful { get; set; }
+        public string RawJSONData { get; set; }
+        public byte[] RawBinaryData { get; set; }
+        public WebSocketReceiveResult WebSocketResult { get; set; }
     }
 
     public abstract class CallBackBaseEventArgsWithId : CallBackBaseEventArgs
@@ -53,6 +61,11 @@ namespace NextGenSoftware.WebSocket
             Id = id;
         }
 
-        public string Id { get; private set; }
+        public CallBackBaseEventArgsWithId() : base()
+        {
+          
+        }
+
+        public string Id { get; set; }
     }
 }

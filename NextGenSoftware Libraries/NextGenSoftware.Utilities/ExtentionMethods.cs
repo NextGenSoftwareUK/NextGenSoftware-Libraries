@@ -13,7 +13,7 @@ namespace NextGenSoftware.Utilities.ExtentionMethods
 
         public static string ToCamelCase(this string str)
         {
-            return Char.ToLowerInvariant(str[0]) + str.Substring(1);
+            return Char.ToLowerInvariant(str[0]) + str.Substring(1).Replace(" ", "");
         }
 
         public static string ToPascalCase(this string str)
