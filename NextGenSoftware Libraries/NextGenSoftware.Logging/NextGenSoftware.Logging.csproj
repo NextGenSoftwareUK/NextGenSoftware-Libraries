@@ -13,7 +13,9 @@
 		<PackageIcon>STARJPG.JPG</PackageIcon>
 		<Authors>David Ellams (NextGen Software Ltd)</Authors>
 		<PackageTags>logging;net;unity</PackageTags>
-		<PackageReleaseNotes>Improved error handling &amp; reporting.</PackageReleaseNotes>
+		<PackageReleaseNotes>
+			Re-wrote &amp; improved the file logging code in DefaultLogger so the file is shared and also if the write fails for whatever reason it will re-try 3 times.
+		</PackageReleaseNotes>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
 		<Copyright>Copyright © NextGen Software Ltd 2022</Copyright>
@@ -21,7 +23,7 @@
 		<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<Version>1.1.3</Version>
+		<Version>1.1.4</Version>
 		<!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
 	</PropertyGroup>
 
