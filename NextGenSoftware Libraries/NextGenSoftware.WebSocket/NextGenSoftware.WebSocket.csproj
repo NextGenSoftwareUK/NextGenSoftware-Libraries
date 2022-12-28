@@ -14,12 +14,11 @@
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>websocket;net;unity</PackageTags>
 	  <PackageReleaseNotes>
-		  - Added a new parameterless constructor to CallBackBackEventArgs in EventArgs in NextGenSoftware.WebSocket.
-		  - Added isError, Message &amp; Exception properties to CallBackBackEventArgs in EventArgs in NextGenSoftware.WebSocket.
-		  - Made all properties in CallBackBackEventArgs public settable in EventArgs in NextGenSoftware.WebSocket.
-		  - Added a new parameterless constructor to CallBackBaseEventArgsWithId in EventArgs in NextGenSoftware.WebSocket.
-		  - Made Id propertiy in CallBackBaseEventArgsWithIdpublic settable in EventArgs in NextGenSoftware.WebSocket.
-		  - Increased SendChunkSize &amp; ReceiveChunkSize from 1024 to 4096 bytes in WebSocket in NextGenSoftware.WebSocket because it was previously truncating messages received from the Holochain Conductor in HoloNET (uses WebSocket).
+		  - Removed DataReceivedEventArgs paremeter constructor in NextGenSoftware.WebSocket.
+		  - Added IsError &amp; Message to CallBackBaseEventArgs in NextGenSoftware.WebSocket.
+		  - Added new CallBackWithDataBaseEventArgs to NextGenSoftware.WebSocket.
+		  - CallBackBaseEventArgsWithId now extends from CallBackWithDataBaseEventArgs instead of CallBackBaseEventArgs in NextGenSoftware.WebSocket.
+		  - Removed CallBackBaseEventArgsWithId parameter constructor in NextGenSoftware.WebSocket.
 	  </PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
 	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
@@ -28,7 +27,7 @@
 	  <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	  <Version>1.1.4</Version>
+	  <Version>1.1.5</Version>
 	  <!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 
