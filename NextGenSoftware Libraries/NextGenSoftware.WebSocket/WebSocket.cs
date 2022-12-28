@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NextGenSoftware.Logging;
+using NextGenSoftware.Utilities;
 
 namespace NextGenSoftware.WebSocket
 {
@@ -186,7 +187,15 @@ namespace NextGenSoftware.WebSocket
                 if (ClientWebSocket != null && ClientWebSocket.State != WebSocketState.Connecting && ClientWebSocket.State != WebSocketState.Closed && ClientWebSocket.State != WebSocketState.Aborted && ClientWebSocket.State != WebSocketState.CloseSent && ClientWebSocket.State != WebSocketState.CloseReceived)
                 {
                     Logger.Log(string.Concat("Disconnecting from ", EndPoint, "..."), LogType.Info, true);
-                    await ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client manually disconnected.", CancellationToken.None);
+                    
+                    try
+                    {
+                        await ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client manually disconnected.", CancellationToken.None);
+                    }
+                    catch (Exception ex)
+                    {
+
+                    }
 
                     if (ClientWebSocket.State == WebSocketState.Closed)
                     {
@@ -288,7 +297,16 @@ namespace NextGenSoftware.WebSocket
                         {
                             stringResult.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
                             Logger.Log(string.Concat("Received Data: ", stringResult), LogType.Info);
-                            OnDataReceived?.Invoke(this, new DataReceivedEventArgs(null, EndPoint, true, buffer, stringResult.ToString(), result));
+                            OnDataReceived?.Invoke(this, new DataReceivedEventArgs()
+                            {
+                                EndPoint = EndPoint,
+                                IsCallSuccessful = true,
+                                RawBinaryData = buffer,
+                                RawBinaryDataAsString = DataHelper.ConvertBinaryDataToString(buffer),
+                                RawBinaryDataDecoded = DataHelper.DecodeBinaryData(buffer),
+                                RawJSONData = stringResult.ToString(),
+                                WebSocketResult = result
+                            });
                         }
                     } while (!result.EndOfMessage);
                 }

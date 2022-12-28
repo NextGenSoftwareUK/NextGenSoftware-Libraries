@@ -14,8 +14,7 @@
 	<Authors>David Ellams (NextGen Software Ltd)</Authors>
 	<PackageTags>utilities;net;unity</PackageTags>
 	<PackageReleaseNotes>
-		- Improved ToCamelCase function.
-		- Added ExpandoObjectHelpers.
+		- Added new DataHelper containing ConvertBinaryDataToString &amp; DecodeBinaryData functions.
 	</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
 	<RepositoryUrl>https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK</RepositoryUrl>
@@ -24,7 +23,7 @@
 	<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	<Version>1.0.4</Version>
+	<Version>1.0.5</Version>
 	<!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 

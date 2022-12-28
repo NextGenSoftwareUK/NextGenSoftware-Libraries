@@ -22,20 +22,26 @@ namespace NextGenSoftware.WebSocket
     }
     public class DataReceivedEventArgs : CallBackBaseEventArgsWithId
     {
-        public DataReceivedEventArgs(string id, string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData, WebSocketReceiveResult webSocketResult) : base(id, endPoint, isCallSuccessful, rawBinaryData, rawJSONData, webSocketResult)
-        {
-            
-        }
+        //public DataReceivedEventArgs(string id, string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData, WebSocketReceiveResult webSocketResult) : base(id, endPoint, isCallSuccessful, rawBinaryData, rawJSONData, webSocketResult)
+        //{
+
+        //}
     }
     
     public abstract class CallBackBaseEventArgs : EventArgs
     {
-        public CallBackBaseEventArgs()
+        public bool IsError { get; set; }
+        public string Message { get; set; }
+    }
+
+    public abstract class CallBackWithDataBaseEventArgs : CallBackBaseEventArgs
+    {
+        public CallBackWithDataBaseEventArgs()
         {
 
         }
 
-        public CallBackBaseEventArgs(string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData, WebSocketReceiveResult webSocketResult)
+        public CallBackWithDataBaseEventArgs(string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData, WebSocketReceiveResult webSocketResult)
         {
             EndPoint = endPoint;
             IsCallSuccessful = isCallSuccessful;
@@ -44,22 +50,24 @@ namespace NextGenSoftware.WebSocket
             WebSocketResult = webSocketResult;
         }
 
-        public bool IsError { get; set; }
-        public string Message { get; set; }
+        //public bool IsError { get; set; }
+        //public string Message { get; set; }
         public Exception Excception { get; set; }
         public string EndPoint { get; set; }
         public bool IsCallSuccessful { get; set; }
         public string RawJSONData { get; set; }
         public byte[] RawBinaryData { get; set; }
+        public string RawBinaryDataAsString { get; set; }
+        public string RawBinaryDataDecoded { get; set; }
         public WebSocketReceiveResult WebSocketResult { get; set; }
     }
 
-    public abstract class CallBackBaseEventArgsWithId : CallBackBaseEventArgs
+    public abstract class CallBackBaseEventArgsWithId : CallBackWithDataBaseEventArgs
     {
-        public CallBackBaseEventArgsWithId(string id, string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData, WebSocketReceiveResult webSocketResult) : base(endPoint, isCallSuccessful, rawBinaryData, rawJSONData, webSocketResult)
-        {
-            Id = id;
-        }
+        //public CallBackBaseEventArgsWithId(string id, string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData, WebSocketReceiveResult webSocketResult) : base(endPoint, isCallSuccessful, rawBinaryData, rawJSONData, webSocketResult)
+        //{
+        //    Id = id;
+        //}
 
         public CallBackBaseEventArgsWithId() : base()
         {
