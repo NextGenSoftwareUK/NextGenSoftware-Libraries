@@ -14,7 +14,7 @@
 		<Authors>David Ellams (NextGen Software Ltd)</Authors>
 		<PackageTags>logging;net;unity</PackageTags>
 		<PackageReleaseNotes>
-			Re-wrote &amp; improved the file logging code in DefaultLogger so the file is shared and also if the write fails for whatever reason it will re-try 3 times.
+			- Updated dependencies for NextGenSoftware.CLI.Engine 1.1.1 -&gt; 1.1.2.
 		</PackageReleaseNotes>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
@@ -23,7 +23,7 @@
 		<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<Version>1.1.4</Version>
+		<Version>1.1.5</Version>
 		<!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
 	</PropertyGroup>
 
