@@ -5,12 +5,14 @@ https://github.com/NextGenSoftwareUK/holochain-client-csharp
 
 Utilities provides the following methods:
 
-ToSnakeCase \
-ToCamelCase \
-ToPascalCase \
-ExpandoObjectHelpers.AddProperty \
-string DataHelper.ConvertBinaryDataToStringbyte[] data) - Converts the binary data to a coma delimited string, useful for logging/debugging etc. \
-string DataHelper.DecodeBinaryData(byte[] data) - Decodes the data using Encoding.UTF8. \
+|Function|Description|
+|--------|-----------|
+|ToSnakeCase|Extention method for string|
+|ToCamelCase|Extention method for string|
+|ToPascalCase|Extention method for string|
+|ExpandoObjectHelpers.AddProperty | Adds property values to a ExpandoObject.
+|string DataHelper.ConvertBinaryDataToStringbyte[] data)|Converts the binary data to a coma delimited string, useful for logging/debugging etc.|
+|string DataHelper.DecodeBinaryData(byte[] data)|Decodes the data using Encoding.UTF8.|
 
 Lots more coming soon... ;-) (will be moved out of the main OASIS codebase here: https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK)
 
