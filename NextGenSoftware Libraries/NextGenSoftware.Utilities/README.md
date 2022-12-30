@@ -11,8 +11,8 @@ Utilities provides the following methods:
 |ToCamelCase|Extention method for string|
 |ToPascalCase|Extention method for string|
 |ExpandoObjectHelpers.AddProperty | Adds property values to a ExpandoObject.
-|string DataHelper.ConvertBinaryDataToStringbyte[] data)|Converts the binary data to a coma delimited string, useful for logging/debugging etc.|
-|string DataHelper.DecodeBinaryData(byte[] data)|Decodes the data using Encoding.UTF8.|
+|string DataHelper.ConvertBinaryDataToStringbyte[] data, bool ignoreEmptyByte = true)|Converts the binary data to a coma delimited string, useful for logging/debugging etc.|
+|string DataHelper.DecodeBinaryDataAsUTF8(byte[] data)|Decodes the data using Encoding.UTF8.|
 
 Lots more coming soon... ;-) (will be moved out of the main OASIS codebase here: https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK)
 

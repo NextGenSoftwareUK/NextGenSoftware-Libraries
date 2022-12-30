@@ -14,11 +14,7 @@
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>websocket;net;unity</PackageTags>
 	  <PackageReleaseNotes>
-		  - Removed DataReceivedEventArgs paremeter constructor in NextGenSoftware.WebSocket.
-		  - Added IsError &amp; Message to CallBackBaseEventArgs in NextGenSoftware.WebSocket.
-		  - Added new CallBackWithDataBaseEventArgs to NextGenSoftware.WebSocket.
-		  - CallBackBaseEventArgsWithId now extends from CallBackWithDataBaseEventArgs instead of CallBackBaseEventArgs in NextGenSoftware.WebSocket.
-		  - Removed CallBackBaseEventArgsWithId parameter constructor in NextGenSoftware.WebSocket.
+		  - SendRawDataAsync method now uses DataHelper functions contained in NextGenSoftware.Utilities.
 	  </PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
 	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
@@ -27,7 +23,7 @@
 	  <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	  <Version>1.1.5</Version>
+	  <Version>1.1.6</Version>
 	  <!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 

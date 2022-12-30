@@ -14,7 +14,8 @@
 	<Authors>David Ellams (NextGen Software Ltd)</Authors>
 	<PackageTags>utilities;net;unity</PackageTags>
 	<PackageReleaseNotes>
-		- Added new DataHelper containing ConvertBinaryDataToString &amp; DecodeBinaryData functions.
+		- DataHelper.ConvertBinaryDataToString now has optional param ignoreEmptyByte which defaults to true.
+		- Renamed DataHelper.DecodeBinaryData to DecodeBinaryDataAsUTF8.
 	</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
 	<RepositoryUrl>https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK</RepositoryUrl>
@@ -23,7 +24,7 @@
 	<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	<Version>1.0.5</Version>
+	<Version>1.0.6</Version>
 	<!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 

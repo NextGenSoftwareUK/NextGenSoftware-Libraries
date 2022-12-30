@@ -186,7 +186,7 @@ namespace NextGenSoftware.WebSocket
 
                 if (ClientWebSocket != null && ClientWebSocket.State != WebSocketState.Connecting && ClientWebSocket.State != WebSocketState.Closed && ClientWebSocket.State != WebSocketState.Aborted && ClientWebSocket.State != WebSocketState.CloseSent && ClientWebSocket.State != WebSocketState.CloseReceived)
                 {
-                    Logger.Log(string.Concat("Disconnecting from ", EndPoint, "..."), LogType.Info, true);
+                    Logger.Log(string.Concat("Disconnecting from ", EndPoint, "..."), LogType.Info, false);
                     
                     try
                     {
@@ -216,16 +216,11 @@ namespace NextGenSoftware.WebSocket
             try
             {
                 //await UnityWebSocket.Send(data);
-                
-                
-                string rawBytes = "";
-
-                foreach (byte b in data)
-                    rawBytes = string.Concat(rawBytes, ", ", b.ToString());
 
                 Logger.Log("Sending Raw Data...", LogType.Info);
-                Logger.Log($"UTF8: {Encoding.UTF8.GetString(data, 0, data.Length)}", LogType.Debug);
-                Logger.Log($"Bytes: {rawBytes}", LogType.Debug);
+                Logger.Log($"UTF8: {DataHelper.DecodeBinaryDataAsUTF8(data)}", LogType.Debug);
+                Logger.Log($"Bytes: {DataHelper.ConvertBinaryDataToString(data)}", LogType.Debug);
+
                 //await UnityWebSocket.Send(data);
 
                 // Original HoloNET code (still works):
@@ -303,7 +298,7 @@ namespace NextGenSoftware.WebSocket
                                 IsCallSuccessful = true,
                                 RawBinaryData = buffer,
                                 RawBinaryDataAsString = DataHelper.ConvertBinaryDataToString(buffer),
-                                RawBinaryDataDecoded = DataHelper.DecodeBinaryData(buffer),
+                                RawBinaryDataDecoded = DataHelper.DecodeBinaryDataAsUTF8(buffer),
                                 RawJSONData = stringResult.ToString(),
                                 WebSocketResult = result
                             });
