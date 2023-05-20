@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageId>NextGenSoftware.Logging</PackageId>
 		<Company>NextGen Software Ltd</Company>
@@ -14,7 +14,8 @@
 		<Authors>David Ellams (NextGen Software Ltd)</Authors>
 		<PackageTags>logging;net;unity</PackageTags>
 		<PackageReleaseNotes>
-			- Updated dependencies for NextGenSoftware.CLI.Engine 1.1.1 -&gt; 1.1.2.
+			- Upgraded to .NET 7.
+			- Corrected typeos in error handling.
 		</PackageReleaseNotes>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
@@ -23,7 +24,7 @@
 		<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<Version>1.1.5</Version>
+		<Version>1.2.0</Version>
 		<!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
 	</PropertyGroup>
 

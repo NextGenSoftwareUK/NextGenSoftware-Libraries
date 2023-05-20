@@ -117,7 +117,7 @@ namespace NextGenSoftware.Logging
             }
             catch (Exception ex)
             {
-                HandleError("Error occured in DefaultLogger.Log method.", ex);
+                HandleError("Error occurred in DefaultLogger.Log method.", ex);
             }
         }
 

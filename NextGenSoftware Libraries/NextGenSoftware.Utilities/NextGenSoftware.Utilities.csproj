@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<PackageId>NextGenSoftware.Utilities</PackageId>
 	<Company>NextGen Software Ltd</Company>
@@ -14,8 +14,8 @@
 	<Authors>David Ellams (NextGen Software Ltd)</Authors>
 	<PackageTags>utilities;net;unity</PackageTags>
 	<PackageReleaseNotes>
-		- DataHelper.ConvertBinaryDataToString now has optional param ignoreEmptyByte which defaults to true.
-		- Renamed DataHelper.DecodeBinaryData to DecodeBinaryDataAsUTF8.
+		- Upgraded to .NET 7.
+		- Corrected typeos in error handling.
 	</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
 	<RepositoryUrl>https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK</RepositoryUrl>
@@ -24,7 +24,7 @@
 	<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	<Version>1.0.6</Version>
+	<Version>1.1.0</Version>
 	<!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 

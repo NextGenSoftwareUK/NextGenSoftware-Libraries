@@ -100,7 +100,7 @@ namespace NextGenSoftware.WebSocket
             }
             catch (Exception ex)
             {
-                HandleError("Error occured in WebSocket.Init method.", ex);
+                HandleError("Error occurred in WebSocket.Init method.", ex);
             }
         }
 
@@ -160,7 +160,7 @@ namespace NextGenSoftware.WebSocket
             }
             catch (Exception e)
             {
-                HandleError(string.Concat("Error occured in WebSocket.Connect method connecting to ", EndPoint), e);
+                HandleError(string.Concat("Error occurred in WebSocket.Connect method connecting to ", EndPoint), e);
             }
         }
         
@@ -206,7 +206,7 @@ namespace NextGenSoftware.WebSocket
             }
             catch (Exception e)
             {
-                HandleError(string.Concat("Error occured in WebSocket.Disconnect disconnecting from ", EndPoint), e);
+                HandleError(string.Concat("Error occurred in WebSocket.Disconnect disconnecting from ", EndPoint), e);
             }
         }
 
@@ -251,7 +251,7 @@ namespace NextGenSoftware.WebSocket
             }
             catch (Exception ex)
             {
-                HandleError("Error occured in WebSocket.SendRawDataAsync method.", ex);
+                HandleError("Error occurred in WebSocket.SendRawDataAsync method.", ex);
             }
         }
 
@@ -309,7 +309,7 @@ namespace NextGenSoftware.WebSocket
 
             catch (TaskCanceledException ex)
             {
-                string msg = string.Concat("Error occured in WebSocket.StartListen method. Connection timed out after ", (Config.TimeOutSeconds), " seconds.");
+                string msg = string.Concat("Error occurred in WebSocket.StartListen method. Connection timed out after ", (Config.TimeOutSeconds), " seconds.");
                 OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = msg });
                 HandleError(msg, ex);
                 await AttemptReconnect();
@@ -317,8 +317,8 @@ namespace NextGenSoftware.WebSocket
 
             catch (Exception ex)
             {
-                OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = string.Concat("Error occured: ", ex) });
-                HandleError("Error occured in WebSocket.StartListen method. Disconnected because an error occured.", ex);
+                OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = string.Concat("Error occurred: ", ex) });
+                HandleError("Error occurred in WebSocket.StartListen method. Disconnected because an error occurred.", ex);
                 await AttemptReconnect();
             }
 
@@ -344,7 +344,7 @@ namespace NextGenSoftware.WebSocket
             }
             catch (Exception ex)
             {
-                HandleError("Error occured in WebSocket.AttemptReconnect method.", ex);
+                HandleError("Error occurred in WebSocket.AttemptReconnect method.", ex);
             }
         }
 
