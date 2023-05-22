@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <PackageId>NextGenSoftware.Logging.NLog</PackageId>
@@ -14,7 +14,7 @@
 	  <PackageIcon>STARJPG.JPG</PackageIcon>
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>logging;net;unity</PackageTags>
-	  <PackageReleaseNotes>- Updated dependencies for NextGenSoftware.Logging 1.1.4 -&gt; 1.1.5.</PackageReleaseNotes>
+	  <PackageReleaseNotes>Upgraded to .NET 7.</PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
 	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
 	  <Copyright>Copyright © NextGen Software Ltd 2022</Copyright>
@@ -22,7 +22,7 @@
 	  <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	  <Version>1.0.1</Version>
+	  <Version>1.1.0</Version>
 	  <!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 
