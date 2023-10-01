@@ -22,71 +22,106 @@ namespace NextGenSoftware.CLI.Engine
 
         public void Start(int left, int top, int delay = 100)
         {
-            this.Left = left;
-            this.Top = top;
-            this.Delay = delay;
-
-            IsActive = true;
-            if (!_thread.IsAlive)
+            try
             {
-                if (_thread.ThreadState == ThreadState.Stopped)
+                this.Left = left;
+                this.Top = top;
+                this.Delay = delay;
+
+                IsActive = true;
+                if (!_thread.IsAlive)
                 {
-                    _thread = new Thread(Spin);
-                    _thread.Start();
-                }
-                else
-                {
-                    try
-                    {
-                        _thread.Start();
-                    }
-                    catch (Exception ex)
+                    if (_thread.ThreadState == ThreadState.Stopped)
                     {
                         _thread = new Thread(Spin);
                         _thread.Start();
                     }
+                    else
+                    {
+                        try
+                        {
+                            _thread.Start();
+                        }
+                        catch (Exception ex)
+                        {
+                            _thread = new Thread(Spin);
+                            _thread.Start();
+                        }
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+
             }
         }
 
         public void Start()
         {
-            Console.CursorVisible = false;
+            try
+            {
+                Console.CursorVisible = false;
 
-            int left = Console.CursorLeft;
+                int left = Console.CursorLeft;
 
-            if (left < 0)
-                left = 0;
+                if (left < 0)
+                    left = 0;
 
-            left = left + 1;
-            Start(left, Console.CursorTop);
+                left = left + 1;
+                Start(left, Console.CursorTop);
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         public void Stop()
         {
-            if (IsActive)
+            try
             {
-                IsActive = false;
-                Draw(' ');
+                if (IsActive)
+                {
+                    IsActive = false;
+                    Draw(' ');
+                }
+            }
+            catch (Exception e)
+            {
+
             }
         }
 
         private void Spin()
         {
-            while (IsActive)
+            try
             {
-                Turn();
-                Thread.Sleep(Delay);
+                while (IsActive)
+                {
+                    Turn();
+                    Thread.Sleep(Delay);
+                }
+            }
+            catch (Exception e)
+            {
+
             }
         }
 
         private void Draw(char c)
         {
-            Console.SetCursorPosition(Left, Top);
-            //ConsoleColor existingColour = Console.ForegroundColor;
-            //Console.ForegroundColor = Colour;
-            Console.Write(c);
-            //Console.ForegroundColor = existingColour;
+            try
+            {
+                Console.SetCursorPosition(Left, Top);
+                //ConsoleColor existingColour = Console.ForegroundColor;
+                //Console.ForegroundColor = Colour;
+                Console.Write(c);
+                //Console.ForegroundColor = existingColour;
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         private void Turn()
