@@ -261,9 +261,7 @@ namespace NextGenSoftware.WebSocket
                 string bytesDecoded = DataHelper.DecodeBinaryDataAsUTF8(data);
                 string bytesAsString = DataHelper.ConvertBinaryDataToString(data);
 
-                Logger.Log("Sending Raw Data...", LogType.Info);
-                Logger.Log($"UTF8: {bytesDecoded}", LogType.Debug);
-                Logger.Log($"Bytes: {bytesAsString}", LogType.Debug);
+                Logger.Log($"Sending Raw Data... Bytes: {bytesDecoded} ({bytesAsString})", LogType.Info);
 
                 //await UnityWebSocket.Send(data);
 

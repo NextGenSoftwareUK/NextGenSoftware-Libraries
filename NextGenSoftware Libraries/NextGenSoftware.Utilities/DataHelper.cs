@@ -13,19 +13,19 @@ namespace NextGenSoftware.Utilities
 
             foreach (byte b in data)
             {
-                if (ignoreEmptyByte && b > 0 || !ignoreEmptyByte)
+                if ((ignoreEmptyByte && b > 0) || !ignoreEmptyByte)
                     result = string.Concat(result, ", ", b.ToString());
             }
 
             result = result.Substring(1, result.Length - 1);
-            return result;
+            return result.Trim();
         }
 
         public static string DecodeBinaryDataAsUTF8(byte[] data)
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(Encoding.UTF8.GetString(data, 0, data.Length));
-            return sb.ToString();
+            return sb.ToString().Trim();
         }
 
 

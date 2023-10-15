@@ -100,7 +100,7 @@ namespace NextGenSoftware.Logging
 
                                 //File.AppendAllText(String.Concat(LogDirectory, "\\", LogFileName), logMessage);
 
-                                using (var stream = File.Open(String.Concat(LogDirectory, "\\", LogFileName), FileMode.OpenOrCreate, FileAccess.Write, FileShare.Write))
+                                using (var stream = File.Open(String.Concat(LogDirectory, "\\", LogFileName), FileMode.Append, FileAccess.Write, FileShare.Write))
                                 {
                                     using (var writer = new StreamWriter(stream))
                                         writer.WriteLine(logMessage);
