@@ -1,7 +1,4 @@
-﻿
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Text;
+﻿using System.Text;
 
 namespace NextGenSoftware.Utilities
 {
@@ -14,7 +11,7 @@ namespace NextGenSoftware.Utilities
             foreach (byte b in data)
             {
                 if ((ignoreEmptyByte && b > 0) || !ignoreEmptyByte)
-                    result = string.Concat(result, ", ", b.ToString());
+                    result = string.Concat(result, ",", b.ToString());
             }
 
             result = result.Substring(1, result.Length - 1);
@@ -25,7 +22,7 @@ namespace NextGenSoftware.Utilities
         {
             StringBuilder sb = new StringBuilder();
             sb.Append(Encoding.UTF8.GetString(data, 0, data.Length));
-            return sb.ToString().Trim();
+            return sb.ToString().Replace("\0", "").Trim();
         }
 
 
