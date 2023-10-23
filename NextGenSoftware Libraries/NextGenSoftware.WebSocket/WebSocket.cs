@@ -389,7 +389,7 @@ namespace NextGenSoftware.WebSocket
             {
                 for (int i = 0; i < (Config.ReconnectionAttempts); i++)
                 {
-                    if (ClientWebSocket.State == WebSocketState.Open)
+                    if (ClientWebSocket != null && ClientWebSocket.State == WebSocketState.Open)
                         break;
 
                     Logger.Log(string.Concat("Attempting to reconnect... Attempt ", +i), LogType.Info, true);
