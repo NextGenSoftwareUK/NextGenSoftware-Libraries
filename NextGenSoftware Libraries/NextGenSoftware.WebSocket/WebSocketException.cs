@@ -4,7 +4,7 @@ namespace NextGenSoftware.WebSocket
 {
     public class WebSocketException : Exception
     {
-        public string EndPoint { get; set; }
+        public Uri EndPoint { get; set; }
 
         public WebSocketException()
         {
@@ -21,7 +21,7 @@ namespace NextGenSoftware.WebSocket
 
         }
 
-        public WebSocketException(string message, Exception innerException, string endPoint) : base(message, innerException)
+        public WebSocketException(string message, Exception innerException, Uri endPoint) : base(message, innerException)
         {
             this.EndPoint = endPoint;
         }

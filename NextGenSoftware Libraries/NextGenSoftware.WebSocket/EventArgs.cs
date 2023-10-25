@@ -5,18 +5,18 @@ namespace NextGenSoftware.WebSocket
 {
     public class ConnectedEventArgs : EventArgs
     {
-        public string EndPoint { get; set; }
+        public Uri EndPoint { get; set; }
     }
 
     public class DisconnectedEventArgs : EventArgs
     {
-        public string EndPoint { get; set; }
+        public Uri EndPoint { get; set; }
         public string Reason { get; set; }
     }
 
     public class WebSocketErrorEventArgs : EventArgs
     {
-        public string EndPoint { get; set; }
+        public Uri EndPoint { get; set; }
         public string Reason { get; set; }
         public Exception ErrorDetails { get; set; }
     }
@@ -79,7 +79,7 @@ namespace NextGenSoftware.WebSocket
         }
 
         //public CallBackWithDataBaseEventArgs(string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData, WebSocketReceiveResult webSocketResult)
-        public CallBackWithDataBaseEventArgs(string endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData)
+        public CallBackWithDataBaseEventArgs(Uri endPoint, bool isCallSuccessful, byte[] rawBinaryData, string rawJSONData)
         {
             EndPoint = endPoint;
             IsCallSuccessful = isCallSuccessful;
@@ -91,7 +91,7 @@ namespace NextGenSoftware.WebSocket
         //public bool IsError { get; set; }
         //public string Message { get; set; }
         public Exception Excception { get; set; }
-        public string EndPoint { get; set; }
+        public Uri EndPoint { get; set; }
         public bool IsCallSuccessful { get; set; }
         public string RawJSONData { get; set; }
         public byte[] RawBinaryData { get; set; }

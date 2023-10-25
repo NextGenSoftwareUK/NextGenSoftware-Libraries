@@ -35,7 +35,7 @@ namespace NextGenSoftware.WebSocket
         public event Error OnError;
 
         // Properties
-        public string EndPoint { get; private set; }
+        public Uri EndPoint { get; private set; }
         public ClientWebSocket ClientWebSocket { get; set; } // Original HoloNET WebSocket (still works):
         //public UnityWebSocket UnityWebSocket { get; private set; } //Temporily using UnityWebSocket code until can find out why not working with RSM Conductor...
         
@@ -70,21 +70,21 @@ namespace NextGenSoftware.WebSocket
         //public IWebSocketClientNET NetworkServiceProvider { get; set; }
         //public NetworkServiceProviderMode NetworkServiceProviderMode { get; set; }
 
-        public WebSocket(string endPointURI, bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
+        public WebSocket(Uri endPointURI, bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
         {
             EndPoint = endPointURI;
             Logger.Loggers.Add(new DefaultLogger(logToConsole, logToFile, releativePathToLogFolder, logFileName, addAdditionalSpaceAfterEachLogEntry, showColouredLogs, debugColour, infoColour, warningColour, errorColour));
             Init();
         }
 
-        public WebSocket(string endPointURI, IEnumerable<ILogger> loggers)
+        public WebSocket(Uri endPointURI, IEnumerable<ILogger> loggers)
         {
             EndPoint = endPointURI;
             Logger.Loggers = new List<ILogger>(loggers);
             Init();
         }
 
-        public WebSocket(string endPointURI, ILogger logger)
+        public WebSocket(Uri endPointURI, ILogger logger)
         {
             Logger.Loggers.Add(logger);
             EndPoint = endPointURI;
@@ -169,14 +169,14 @@ namespace NextGenSoftware.WebSocket
                     Logger.Log(string.Concat("Connecting to ", EndPoint, "..."), LogType.Info, true);
 
                     _connecting = true;
-                    await ClientWebSocket.ConnectAsync(new Uri(EndPoint), CancellationToken.None);
+                    await ClientWebSocket.ConnectAsync(EndPoint, CancellationToken.None);
                     //NetworkServiceProvider.Connect(new Uri(EndPoint));
                     //TODO: need to be able to await this.
 
                     //if (NetworkServiceProvider.NetSocketState == NetSocketState.Open)
                     if (ClientWebSocket.State == WebSocketState.Open)
                     {
-                        Logger.Log(string.Concat("Connected to ", EndPoint), LogType.Info);
+                        Logger.Log(string.Concat("Connected to ", EndPoint.AbsoluteUri), LogType.Info);
                         OnConnected?.Invoke(this, new ConnectedEventArgs { EndPoint = EndPoint });
                         _connecting = false;
                         await StartListenAsync();
