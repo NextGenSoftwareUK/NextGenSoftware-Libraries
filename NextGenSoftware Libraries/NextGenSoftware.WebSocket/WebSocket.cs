@@ -306,7 +306,7 @@ namespace NextGenSoftware.WebSocket
 
             try
             {
-                while (ClientWebSocket.State == WebSocketState.Open)
+                while (ClientWebSocket != null && ClientWebSocket.State == WebSocketState.Open)
                 {
                     var stringResult = new StringBuilder();
                     List<byte> dataResponse = new List<byte>();
