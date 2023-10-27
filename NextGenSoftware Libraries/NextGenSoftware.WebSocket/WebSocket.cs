@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using NextGenSoftware.Logging;
 using NextGenSoftware.Utilities;
-using static NextGenSoftware.WebSocket.WebSocket;
 
 namespace NextGenSoftware.WebSocket
 {
@@ -35,7 +34,7 @@ namespace NextGenSoftware.WebSocket
         public event Error OnError;
 
         // Properties
-        public Uri EndPoint { get; private set; }
+        public Uri EndPoint { get; set; }
         public ClientWebSocket ClientWebSocket { get; set; } // Original HoloNET WebSocket (still works):
         //public UnityWebSocket UnityWebSocket { get; private set; } //Temporily using UnityWebSocket code until can find out why not working with RSM Conductor...
         
@@ -70,24 +69,24 @@ namespace NextGenSoftware.WebSocket
         //public IWebSocketClientNET NetworkServiceProvider { get; set; }
         //public NetworkServiceProviderMode NetworkServiceProviderMode { get; set; }
 
-        public WebSocket(Uri endPointURI, bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
+        public WebSocket(bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
         {
-            EndPoint = endPointURI;
+           // EndPoint = endPointURI;
             Logger.Loggers.Add(new DefaultLogger(logToConsole, logToFile, releativePathToLogFolder, logFileName, addAdditionalSpaceAfterEachLogEntry, showColouredLogs, debugColour, infoColour, warningColour, errorColour));
             Init();
         }
 
-        public WebSocket(Uri endPointURI, IEnumerable<ILogger> loggers)
+        public WebSocket(IEnumerable<ILogger> loggers)
         {
-            EndPoint = endPointURI;
+           // EndPoint = endPointURI;
             Logger.Loggers = new List<ILogger>(loggers);
             Init();
         }
 
-        public WebSocket(Uri endPointURI, ILogger logger)
+        public WebSocket(ILogger logger)
         {
             Logger.Loggers.Add(logger);
-            EndPoint = endPointURI;
+            //EndPoint = endPointURI;
             Init();
         }
 
@@ -114,7 +113,7 @@ namespace NextGenSoftware.WebSocket
             }
         }
 
-        
+
         //private void UnityWebSocket_OnMessage(byte[] data)
         //{
         //    //OnDataReceived?.Invoke(this, new DataReceivedEventArgs("1", EndPoint, true, data, null, null));
@@ -149,14 +148,31 @@ namespace NextGenSoftware.WebSocket
         //   // await UnityWebSocket.Receive();
         //}
 
-        
-        // The original HoloNET Connect method (still works).
-        public async Task ConnectAsync()
+
+        /// <summary>
+        /// Connects to the specefied Endpoint.
+        /// </summary>
+        /// <param name="endpoint"></param>
+        /// <returns></returns>
+        public async Task ConnectAsync(string endpoint)
+        {
+            await ConnectAsync(new Uri(endpoint));
+        }
+
+
+        /// <summary>
+        /// Connects to the specefied Endpoint.
+        /// </summary>
+        /// <param name="endpoint"></param>
+        /// <returns></returns>
+        public async Task ConnectAsync(Uri endpoint)
         {
             try
             {
                 if (Logger.Loggers.Count == 0)
                     throw new WebSocketException("ERROR: No Logger Has Been Specified! Please set a Logger with the Logger.Loggers Property.");
+
+                this.EndPoint = endpoint;
 
                 if (ClientWebSocket == null)
                 {
@@ -393,7 +409,7 @@ namespace NextGenSoftware.WebSocket
                         break;
 
                     Logger.Log(string.Concat("Attempting to reconnect... Attempt ", +i), LogType.Info, true);
-                    await ConnectAsync();
+                    await ConnectAsync(EndPoint);
                     await Task.Delay(Config.ReconnectionIntervalSeconds);
                 }
             }
