@@ -8,10 +8,7 @@ namespace NextGenSoftware.Logging
 {
     public class DefaultLogger : ILogger
     {
-        private const int NumberOfRetries = 3;
-        private const int DelayOnRetry = 1000;
-
-        public DefaultLogger(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
+        public DefaultLogger(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
         {
             LogDirectory = pathToLogFile;
             LogFileName = logFileName;
@@ -23,11 +20,15 @@ namespace NextGenSoftware.Logging
             InfoColour = infoColour;
             ErrorColour = errorColour;
             WarningColour = warningColour;
+            NumberOfRetriesToLogToFile = numberOfRetriesToLogToFile;
+            RetryLoggingToFileEverySeconds = retryLoggingToFileEverySeconds;
         }
 
         public delegate void Error(object sender, LoggingErrorEventArgs e);
         public event Error OnError;
 
+        public int NumberOfRetriesToLogToFile { get; set; } = 3;
+        public int RetryLoggingToFileEverySeconds { get; set; } = 1;
         public string LogDirectory { get; set; }
         public string LogFileName { get; set; }
         public bool LogToConsole { get; set; }
@@ -79,16 +80,21 @@ namespace NextGenSoftware.Logging
 
                     if (LogToConsole)
                     {
-                        if (showWorkingAnimation)
-                            CLIEngine.ShowWorkingMessage(message, consoleColour, false, 0);
-                        else
+                        try
+                        {
+                            //TODO: Need to check if running on non windows enviroment here and find different logging for each platform if possible...
+                            if (showWorkingAnimation)
+                                CLIEngine.ShowWorkingMessage(message, consoleColour, false, 0);
+                            else
 
-                            CLIEngine.ShowMessage(message, consoleColour, false, false, 0);
+                                CLIEngine.ShowMessage(message, consoleColour, false, false, 0);
+                        }
+                        catch (Exception e) { }
                     }
 
                     if (LogToFile)
                     {
-                        for (int i = 1; i <= NumberOfRetries; ++i)
+                        for (int i = 1; i <= NumberOfRetriesToLogToFile; ++i)
                         {
                             try
                             {
@@ -107,9 +113,9 @@ namespace NextGenSoftware.Logging
                                 }
                                 break; 
                             }
-                            catch (IOException e) when (i <= NumberOfRetries)
+                            catch (IOException e) when (i <= NumberOfRetriesToLogToFile)
                             {
-                                Thread.Sleep(DelayOnRetry);
+                                Thread.Sleep(RetryLoggingToFileEverySeconds * 1000);
                             }
                         }
                     }
