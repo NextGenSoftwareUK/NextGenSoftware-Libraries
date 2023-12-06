@@ -6,7 +6,7 @@ using NextGenSoftware.WebSocket;
 
 namespace NextGenSoftware.Logging
 {
-    public class DefaultLogger : ILogger
+    public class DefaultLogger : LogProviderBase, ILogProvider
     {
         public DefaultLogger(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
         {
@@ -71,7 +71,7 @@ namespace NextGenSoftware.Logging
         {
             try
             {
-                if (Logger.ContinueLogging(type))
+                if (ContinueLogging(type))
                 {
                     string logMessage = $"{DateTime.Now} {type}: {message}";
 

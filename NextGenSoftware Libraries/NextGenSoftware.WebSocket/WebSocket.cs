@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -66,34 +67,59 @@ namespace NextGenSoftware.WebSocket
             }
         }
 
-        //public IWebSocketClientNET NetworkServiceProvider { get; set; }
-        //public NetworkServiceProviderMode NetworkServiceProviderMode { get; set; }
+        public Logger Logger { get; set; } = new Logger();
 
-        public WebSocket(bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
+        public WebSocket(bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", Logger logger = null, bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
         {
-           // EndPoint = endPointURI;
-            Logger.Loggers.Add(new DefaultLogger(logToConsole, logToFile, releativePathToLogFolder, logFileName, addAdditionalSpaceAfterEachLogEntry, showColouredLogs, debugColour, infoColour, warningColour, errorColour));
+            InitLogger(logger);
+            Logger.AddLogProvider(new DefaultLogger(logToConsole, logToFile, releativePathToLogFolder, logFileName, addAdditionalSpaceAfterEachLogEntry, showColouredLogs, debugColour, infoColour, warningColour, errorColour));
             Init();
         }
 
-        public WebSocket(IEnumerable<ILogger> loggers)
+        public WebSocket(IEnumerable<ILogProvider> logProviders, bool alsoUseDefaultLogger = false)
         {
-           // EndPoint = endPointURI;
-            Logger.Loggers = new List<ILogger>(loggers);
+            InitLogger();
+            Logger.AddLogProviders(logProviders);
+
+            if (alsoUseDefaultLogger)
+                Logger.AddLogProvider(new DefaultLogger());
+
             Init();
         }
 
-        public WebSocket(ILogger logger)
+        public WebSocket(ILogProvider logProvider, bool alsoUseDefaultLogger = false)
         {
-            Logger.Loggers.Add(logger);
-            //EndPoint = endPointURI;
+            InitLogger();
+            Logger.AddLogProvider(logProvider);
+
+            if (alsoUseDefaultLogger)
+                Logger.AddLogProvider(new DefaultLogger());
+
             Init();
+        }
+
+        public WebSocket(Logger logger)
+        {
+            InitLogger(logger);
+            Init();
+        }
+
+        private void InitLogger(Logger logger = null)
+        {
+            if (logger != null)
+                Logger = logger;
+
+            else if (Logger == null)
+                Logger = new Logger();
         }
 
         private void Init()
         {
             try
             {
+                if (Logger.LogProviders.Count == 0)
+                    Logger.AddLogProvider(new DefaultLogger());
+
                 ClientWebSocket = new ClientWebSocket(); // The original built-in HoloNET WebSocket
                 ClientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(Config.KeepAliveSeconds);
 
@@ -169,8 +195,8 @@ namespace NextGenSoftware.WebSocket
         {
             try
             {
-                if (Logger.Loggers.Count == 0)
-                    throw new WebSocketException("ERROR: No Logger Has Been Specified! Please set a Logger with the Logger.Loggers Property.");
+                if (Logger.LogProviders.Count == 0)
+                    throw new WebSocketException("ERROR: No LogProvider Has Been Specified! Please set a LogProvider with the Logger.AddLogProvider method.");
 
                 this.EndPoint = endpoint;
 
@@ -209,8 +235,8 @@ namespace NextGenSoftware.WebSocket
         {
             try
             {
-                if (Logger.Loggers.Count == 0)
-                    throw new WebSocketException("ERROR: No Logger Has Been Specified! Please set a Logger with the Logger.Loggers Property.");
+                if (Logger.LogProviders.Count == 0)
+                    throw new WebSocketException("ERROR: No LogProvider Has Been Specified! Please set a LogProvider with the Logger.AddLogProvider method.");
 
                 //if (UnityWebSocket.ClientWebSocket != null && UnityWebSocket.ClientWebSocket.State != WebSocketState.Connecting && UnityWebSocket.ClientWebSocket.State != WebSocketState.Closed && UnityWebSocket.ClientWebSocket.State != WebSocketState.Aborted && UnityWebSocket.ClientWebSocket.State != WebSocketState.CloseSent && UnityWebSocket.ClientWebSocket.State != WebSocketState.CloseReceived)
                 //{
