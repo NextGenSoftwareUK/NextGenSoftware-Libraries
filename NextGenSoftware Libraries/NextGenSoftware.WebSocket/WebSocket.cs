@@ -221,7 +221,8 @@ namespace NextGenSoftware.WebSocket
                         Logger.Log(string.Concat("Connected to ", EndPoint.AbsoluteUri), LogType.Info);
                         OnConnected?.Invoke(this, new ConnectedEventArgs { EndPoint = EndPoint });
                         _connecting = false;
-                        await StartListenAsync();
+                        //await StartListenAsync();
+                        StartListenAsync();
                     }
                 }
             }
@@ -369,7 +370,7 @@ namespace NextGenSoftware.WebSocket
 
                         if (result.MessageType == WebSocketMessageType.Close)
                         {
-                            if (!_disconnecting)
+                            if (!_disconnecting && ClientWebSocket != null)
                             {
                                 string msg = "Closing because received close message."; //TODO: Move all strings to constants at top or resources.strings
                                 await ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, msg, CancellationToken.None);
