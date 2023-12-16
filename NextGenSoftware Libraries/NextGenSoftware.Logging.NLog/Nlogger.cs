@@ -1,6 +1,6 @@
 ﻿namespace NextGenSoftware.Logging.NLogger
 {
-    public class Nlogger : ILogger
+    public class Nlogger : ILogProvider
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
