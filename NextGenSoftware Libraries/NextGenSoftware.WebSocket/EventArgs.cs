@@ -40,6 +40,7 @@ namespace NextGenSoftware.WebSocket
     public abstract class CallBackBaseEventArgs : EventArgs
     {
         public bool IsError { get; set; }
+        public bool IsWarning { get; set; }
         public string Message { get; set; }
     }
 
