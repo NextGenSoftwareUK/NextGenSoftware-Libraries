@@ -332,7 +332,8 @@ namespace NextGenSoftware.WebSocket
                     await ClientWebSocket.SendAsync(new ArraySegment<byte>(data, offset, count), WebSocketMessageType.Binary, lastMessage, _cancellationToken);
                 }
 
-                OnDataSent?.Invoke(this, new DataSentEventArgs { IsCallSuccessful = true, EndPoint = EndPoint,  RawBinaryData = data, RawBinaryDataAsString = bytesAsString, RawBinaryDataDecoded = bytesDecoded });
+                //OnDataSent?.Invoke(this, new DataSentEventArgs { IsCallSuccessful = true, EndPoint = EndPoint,  RawBinaryData = data, RawBinaryDataAsString = bytesAsString, RawBinaryDataDecoded = bytesDecoded });
+                OnDataSent?.Invoke(this, new DataSentEventArgs { EndPoint = EndPoint, RawBinaryData = data, RawBinaryDataAsString = bytesAsString, RawBinaryDataDecoded = bytesDecoded });
                 Logger.Log("Sending Raw Data... Done!", LogType.Info);
             }
             catch (Exception ex)
@@ -387,7 +388,7 @@ namespace NextGenSoftware.WebSocket
                             OnDataReceived?.Invoke(this, new DataReceivedEventArgs()
                             {
                                 EndPoint = EndPoint,
-                                IsCallSuccessful = true,
+                                //IsCallSuccessful = true,
                                 RawBinaryData = buffer,
                                 RawBinaryDataAsString = DataHelper.ConvertBinaryDataToString(buffer),
                                 RawBinaryDataDecoded = DataHelper.DecodeBinaryDataAsUTF8(buffer),
