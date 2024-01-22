@@ -65,7 +65,7 @@ namespace NextGenSoftware.WebSocket
             RawBinaryData = rawBinaryData;
         }
 
-        public Exception Excception { get; set; }
+        public Exception Exception { get; set; }
         public Uri EndPoint { get; set; }
         public string RawJSONData { get; set; }
         public byte[] RawBinaryData { get; set; }
