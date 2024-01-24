@@ -37,7 +37,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\NextGenSoftware.ErrorHandling\NextGenSoftware.ErrorHandling.csproj" />
 	  <ProjectReference Include="..\NextGenSoftware.Logging\NextGenSoftware.Logging.csproj" />
+	  <ProjectReference Include="..\NextGenSoftware.Utilities\NextGenSoftware.Utilities.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

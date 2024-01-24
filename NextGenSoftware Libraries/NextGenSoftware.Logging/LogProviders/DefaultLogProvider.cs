@@ -2,13 +2,14 @@
 using System.IO;
 using System.Threading;
 using NextGenSoftware.CLI.Engine;
+using NextGenSoftware.ErrorHandling;
 using NextGenSoftware.WebSocket;
 
 namespace NextGenSoftware.Logging
 {
-    public class DefaultLogger : LogProviderBase, ILogProvider
+    public class DefaultLogProvider : LogProviderBase, ILogProvider
     {
-        public DefaultLogger(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
+        public DefaultLogProvider(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
         {
             LogDirectory = pathToLogFile;
             LogFileName = logFileName;

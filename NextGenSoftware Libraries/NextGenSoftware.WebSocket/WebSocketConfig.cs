@@ -1,4 +1,6 @@
 ﻿
+using NextGenSoftware.ErrorHandling;
+
 namespace NextGenSoftware.WebSocket
 {
     public class WebSocketConfig
@@ -41,6 +43,17 @@ namespace NextGenSoftware.WebSocket
         /// <summary>
         /// An enum that specifies what to do when anm error occurs. The options are: `AlwaysThrowExceptionOnError`, `OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent` & `NeverThrowExceptions`). The default is `OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent` meaning it will only throw an error if the `OnError` event has not been subscribed to. This delegates error handling to the caller. If no event has been subscribed then HoloNETClient will throw an error. `AlwaysThrowExceptionOnError` will always throw an error even if the `OnError` event has been subscribed to. The `NeverThrowException` enum option will never throw an error even if the `OnError` event has not been subscribed to. Regardless of what enum is selected, the error will always be logged using whatever `ILogger`s have been injected into the constructor or set on the static Logging.Loggers property.
         /// </summary>
-        public ErrorHandlingBehaviour ErrorHandlingBehaviour { get; set; } = ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent;
+        //public ErrorHandlingBehaviour ErrorHandlingBehaviour { get; set; } = ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent;
+        public ErrorHandlingBehaviour ErrorHandlingBehaviour
+        {
+            get
+            {
+                return ErrorHandling.ErrorHandling.ErrorHandlingBehaviour;
+            }
+            set
+            {
+                ErrorHandling.ErrorHandling.ErrorHandlingBehaviour = value;
+            }
+        }
     }
 }

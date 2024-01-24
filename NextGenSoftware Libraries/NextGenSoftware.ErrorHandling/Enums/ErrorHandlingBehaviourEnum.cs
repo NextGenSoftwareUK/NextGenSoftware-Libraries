@@ -1,5 +1,5 @@
 ﻿
-namespace NextGenSoftware.WebSocket
+namespace NextGenSoftware.ErrorHandling
 {
     public enum ErrorHandlingBehaviour
     {

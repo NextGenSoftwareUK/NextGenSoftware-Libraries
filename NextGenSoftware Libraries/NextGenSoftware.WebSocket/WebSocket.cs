@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using NextGenSoftware.ErrorHandling;
 using NextGenSoftware.Logging;
 using NextGenSoftware.Utilities;
 
@@ -72,7 +72,7 @@ namespace NextGenSoftware.WebSocket
         public WebSocket(bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", Logger logger = null, bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
         {
             InitLogger(logger);
-            Logger.AddLogProvider(new DefaultLogger(logToConsole, logToFile, releativePathToLogFolder, logFileName, addAdditionalSpaceAfterEachLogEntry, showColouredLogs, debugColour, infoColour, warningColour, errorColour));
+            Logger.AddLogProvider(new DefaultLogProvider(logToConsole, logToFile, releativePathToLogFolder, logFileName, addAdditionalSpaceAfterEachLogEntry, showColouredLogs, debugColour, infoColour, warningColour, errorColour));
             Init();
         }
 
@@ -82,7 +82,7 @@ namespace NextGenSoftware.WebSocket
             Logger.AddLogProviders(logProviders);
 
             if (alsoUseDefaultLogger)
-                Logger.AddLogProvider(new DefaultLogger());
+                Logger.AddLogProvider(new DefaultLogProvider());
 
             Init();
         }
@@ -93,7 +93,7 @@ namespace NextGenSoftware.WebSocket
             Logger.AddLogProvider(logProvider);
 
             if (alsoUseDefaultLogger)
-                Logger.AddLogProvider(new DefaultLogger());
+                Logger.AddLogProvider(new DefaultLogProvider());
 
             Init();
         }
@@ -118,7 +118,7 @@ namespace NextGenSoftware.WebSocket
             try
             {
                 if (Logger.LogProviders.Count == 0)
-                    Logger.AddLogProvider(new DefaultLogger());
+                    Logger.AddLogProvider(new DefaultLogProvider());
 
                 ClientWebSocket = new ClientWebSocket(); // The original built-in HoloNET WebSocket
                 ClientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(Config.KeepAliveSeconds);

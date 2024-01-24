@@ -1,6 +1,7 @@
-﻿using NextGenSoftware.Utilities.ExtentionMethods;
-using System;
+﻿using System;
 using System.Drawing;
+using NextGenSoftware.ErrorHandling;
+using NextGenSoftware.Utilities.ExtentionMethods;
 
 namespace NextGenSoftware.CLI.Engine
 {
@@ -14,7 +15,18 @@ namespace NextGenSoftware.CLI.Engine
         public static ConsoleColor MessageColour { get; set; } = ConsoleColor.Yellow;
         public static ConsoleColor WorkingMessageColour { get; set; } = ConsoleColor.Yellow;
 
-        public static ErrorHandlingBehaviour ErrorHandlingBehaviour { get; set; } = ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent;
+        //public static ErrorHandlingBehaviour ErrorHandlingBehaviour { get; set; } = ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent;
+        public static ErrorHandlingBehaviour ErrorHandlingBehaviour
+        {
+            get
+            {
+                return ErrorHandling.ErrorHandling.ErrorHandlingBehaviour;
+            }
+            set
+            {
+                ErrorHandling.ErrorHandling.ErrorHandlingBehaviour = value;
+            }
+        }
 
         public delegate void Error(object sender, CLIEngineErrorEventArgs e);
         public static event Error OnError;
