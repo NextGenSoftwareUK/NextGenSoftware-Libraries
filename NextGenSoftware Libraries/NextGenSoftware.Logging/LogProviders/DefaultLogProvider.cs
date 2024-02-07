@@ -9,8 +9,9 @@ namespace NextGenSoftware.Logging
 {
     public class DefaultLogProvider : LogProviderBase, ILogProvider
     {
-        public DefaultLogProvider(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
+        public DefaultLogProvider(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", int maxLogFileSize = 1000000, bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
         {
+            MaxLogFileSize = maxLogFileSize;
             LogDirectory = pathToLogFile;
             LogFileName = logFileName;
             LogToConsole = logToConsole;
@@ -28,6 +29,7 @@ namespace NextGenSoftware.Logging
         public delegate void Error(object sender, LoggingErrorEventArgs e);
         public event Error OnError;
 
+        public int MaxLogFileSize = 1000000;
         public int NumberOfRetriesToLogToFile { get; set; } = 3;
         public int RetryLoggingToFileEverySeconds { get; set; } = 1;
         public string LogDirectory { get; set; }
@@ -105,9 +107,46 @@ namespace NextGenSoftware.Logging
                                 if (!AddAdditionalSpaceAfterEachLogEntry)
                                     logMessage = String.Concat(logMessage, "\n");
 
-                                //File.AppendAllText(String.Concat(LogDirectory, "\\", LogFileName), logMessage);
+                                string fileName = LogFileName;
 
-                                using (var stream = File.Open(String.Concat(LogDirectory, "\\", LogFileName), FileMode.Append, FileAccess.Write, FileShare.Write))
+                                if (File.Exists(String.Concat(LogDirectory, "\\", LogFileName)))
+                                {
+                                    //Need to find the latest file.
+                                    DirectoryInfo dirInfo = new DirectoryInfo(LogDirectory);
+
+                                    FileInfo[] files = dirInfo.GetFiles();
+                                    DateTime latestWriteTime = DateTime.MinValue;
+
+                                    foreach (FileInfo file in files)
+                                    {
+                                        if (file.LastWriteTime < latestWriteTime)
+                                        {
+                                            fileName = file.Name;
+                                            latestWriteTime = file.LastWriteTime;
+                                        }
+                                    }
+                                    
+                                    FileInfo fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", fileName));
+                                    
+                                    //If the logfile is over its max size then find the next free filename.
+                                    if (fileInfo != null && fileInfo.Length > MaxLogFileSize)
+                                    {
+                                        int fileNumber = 2;
+                                        bool foundFreeFile = false;
+
+                                        while (!foundFreeFile)
+                                        {
+                                            fileName = $"{LogFileName}2";
+
+                                            if (!File.Exists(String.Concat(LogDirectory, "\\", fileName)))
+                                                foundFreeFile = true;
+                                            else
+                                                fileNumber++;
+                                        }   
+                                    }
+                                }
+
+                                using (var stream = File.Open(String.Concat(LogDirectory, "\\", fileName), FileMode.Append, FileAccess.Write, FileShare.Write))
                                 {
                                     using (var writer = new StreamWriter(stream))
                                         writer.WriteLine(logMessage);
