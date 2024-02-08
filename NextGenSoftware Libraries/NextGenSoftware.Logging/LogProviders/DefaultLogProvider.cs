@@ -107,7 +107,8 @@ namespace NextGenSoftware.Logging
                                 if (!AddAdditionalSpaceAfterEachLogEntry)
                                     logMessage = String.Concat(logMessage, "\n");
 
-                                string fileName = LogFileName;
+                                string fullFileName = LogFileName;
+                                FileInfo fileInfo = new FileInfo(fullFileName);
 
                                 if (File.Exists(String.Concat(LogDirectory, "\\", LogFileName)))
                                 {
@@ -119,15 +120,20 @@ namespace NextGenSoftware.Logging
 
                                     foreach (FileInfo file in files)
                                     {
-                                        if (file.LastWriteTime < latestWriteTime)
+                                        if (file.LastWriteTime > latestWriteTime)
                                         {
-                                            fileName = file.Name;
+                                            fullFileName = file.Name;
                                             latestWriteTime = file.LastWriteTime;
                                         }
                                     }
                                     
-                                    FileInfo fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", fileName));
-                                    
+                                    fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", LogFileName));
+                                    string ext = fileInfo.Extension;
+                                    string[] parts = LogFileName.Split('.');
+                                    string fileName = parts[0];
+
+                                    fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", fullFileName));
+
                                     //If the logfile is over its max size then find the next free filename.
                                     if (fileInfo != null && fileInfo.Length > MaxLogFileSize)
                                     {
@@ -136,9 +142,9 @@ namespace NextGenSoftware.Logging
 
                                         while (!foundFreeFile)
                                         {
-                                            fileName = $"{LogFileName}2";
+                                            fullFileName = $"{fileName}{fileNumber}{ext}";
 
-                                            if (!File.Exists(String.Concat(LogDirectory, "\\", fileName)))
+                                            if (!File.Exists(String.Concat(LogDirectory, "\\", fullFileName)))
                                                 foundFreeFile = true;
                                             else
                                                 fileNumber++;
@@ -146,7 +152,7 @@ namespace NextGenSoftware.Logging
                                     }
                                 }
 
-                                using (var stream = File.Open(String.Concat(LogDirectory, "\\", fileName), FileMode.Append, FileAccess.Write, FileShare.Write))
+                                using (var stream = File.Open(String.Concat(LogDirectory, "\\", fullFileName), FileMode.Append, FileAccess.Write, FileShare.Write))
                                 {
                                     using (var writer = new StreamWriter(stream))
                                         writer.WriteLine(logMessage);
