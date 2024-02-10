@@ -1,10 +1,11 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using NextGenSoftware.Logging.Interfaces;
 
 namespace NextGenSoftware.Logging
 {
-    public class Logger
+    public class Logger : ILogger
     {
         public List<ILogProvider> LogProviders { get; set; } = new List<ILogProvider>();
 

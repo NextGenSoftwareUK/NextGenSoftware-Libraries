@@ -3,11 +3,12 @@ using System.IO;
 using System.Threading;
 using NextGenSoftware.CLI.Engine;
 using NextGenSoftware.ErrorHandling;
+using NextGenSoftware.Logging.Interfaces;
 using NextGenSoftware.WebSocket;
 
 namespace NextGenSoftware.Logging
 {
-    public class DefaultLogProvider : LogProviderBase, ILogProvider
+    public class DefaultLogProvider : LogProviderBase, ILogProvider, IDefaultLogProvider
     {
         public DefaultLogProvider(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", int maxLogFileSize = 1000000, bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
         {
@@ -126,7 +127,7 @@ namespace NextGenSoftware.Logging
                                             latestWriteTime = file.LastWriteTime;
                                         }
                                     }
-                                    
+
                                     fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", LogFileName));
                                     string ext = fileInfo.Extension;
                                     string[] parts = LogFileName.Split('.');
@@ -148,7 +149,7 @@ namespace NextGenSoftware.Logging
                                                 foundFreeFile = true;
                                             else
                                                 fileNumber++;
-                                        }   
+                                        }
                                     }
                                 }
 
@@ -157,7 +158,7 @@ namespace NextGenSoftware.Logging
                                     using (var writer = new StreamWriter(stream))
                                         writer.WriteLine(logMessage);
                                 }
-                                break; 
+                                break;
                             }
                             catch (IOException e) when (i <= NumberOfRetriesToLogToFile)
                             {

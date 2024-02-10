@@ -6,11 +6,13 @@ using System.Threading;
 using System.Threading.Tasks;
 using NextGenSoftware.ErrorHandling;
 using NextGenSoftware.Logging;
+using NextGenSoftware.Logging.Interfaces;
 using NextGenSoftware.Utilities;
+using NextGenSoftware.WebSocket.Interfaces;
 
 namespace NextGenSoftware.WebSocket
 {
-    public class WebSocket
+    public class WebSocket : IWebSocket
     {
         private bool _connecting = false;
         private bool _disconnecting = false;
@@ -37,8 +39,8 @@ namespace NextGenSoftware.WebSocket
         // Properties
         public Uri EndPoint { get; set; }
         public ClientWebSocket ClientWebSocket { get; set; } // Original HoloNET WebSocket (still works):
-        //public UnityWebSocket UnityWebSocket { get; private set; } //Temporily using UnityWebSocket code until can find out why not working with RSM Conductor...
-        
+                                                             //public UnityWebSocket UnityWebSocket { get; private set; } //Temporily using UnityWebSocket code until can find out why not working with RSM Conductor...
+
         public WebSocketConfig Config
         {
             get
@@ -67,9 +69,9 @@ namespace NextGenSoftware.WebSocket
             }
         }
 
-        public Logger Logger { get; set; } = new Logger();
+        public ILogger Logger { get; set; } = new Logger();
 
-        public WebSocket(bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", int maxLogFileSize = 1000000, Logger logger = null, bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
+        public WebSocket(bool logToConsole = true, bool logToFile = true, string releativePathToLogFolder = "Logs", string logFileName = "NextGenSoftwareWebSocket.log", int maxLogFileSize = 1000000, ILogger logger = null, bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red)
         {
             InitLogger(logger);
             Logger.AddLogProvider(new DefaultLogProvider(logToConsole, logToFile, releativePathToLogFolder, logFileName, maxLogFileSize, addAdditionalSpaceAfterEachLogEntry, showColouredLogs, debugColour, infoColour, warningColour, errorColour));
@@ -98,13 +100,13 @@ namespace NextGenSoftware.WebSocket
             Init();
         }
 
-        public WebSocket(Logger logger)
+        public WebSocket(ILogger logger)
         {
             InitLogger(logger);
             Init();
         }
 
-        private void InitLogger(Logger logger = null)
+        private void InitLogger(ILogger logger = null)
         {
             if (logger != null)
                 Logger = logger;
@@ -123,7 +125,7 @@ namespace NextGenSoftware.WebSocket
                 ClientWebSocket = new ClientWebSocket(); // The original built-in HoloNET WebSocket
                 ClientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(Config.KeepAliveSeconds);
 
-                 //UnityWebSocket = new UnityWebSocket(EndPoint); //The Unity Web Socket code I ported wraps around the ClientWebSocket.
+                //UnityWebSocket = new UnityWebSocket(EndPoint); //The Unity Web Socket code I ported wraps around the ClientWebSocket.
                 //UnityWebSocket.OnOpen += UnityWebSocket_OnOpen;
                 //UnityWebSocket.OnClose += UnityWebSocket_OnClose;
 
@@ -231,7 +233,7 @@ namespace NextGenSoftware.WebSocket
                 HandleError(string.Concat("Error occurred in WebSocket.Connect method connecting to ", EndPoint), e);
             }
         }
-     
+
         public async Task DisconnectAsync()
         {
             try
@@ -294,7 +296,7 @@ namespace NextGenSoftware.WebSocket
             }
         }
 
-        
+
         public async Task SendRawDataAsync(byte[] data)
         {
             try
@@ -342,7 +344,7 @@ namespace NextGenSoftware.WebSocket
             }
         }
 
-        
+
         private async Task StartListenAsync()
         {
             var buffer = new byte[Config.ReceiveChunkSize];
@@ -360,7 +362,7 @@ namespace NextGenSoftware.WebSocket
                     {
                         if (ClientWebSocket.State != WebSocketState.Open)
                             break;
-                        
+
                         if (Config.NeverTimeOut)
                             result = await ClientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                         else
