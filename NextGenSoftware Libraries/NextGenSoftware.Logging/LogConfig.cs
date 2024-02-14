@@ -5,9 +5,9 @@ namespace NextGenSoftware.Logging
 {
     public static class LogConfig
     {
-        public static LoggingMode LoggingMode = LoggingMode.WarningsErrorsAndInfo;
-        // public static ErrorHandlingBehaviour ErrorHandlingBehaviour { get; set; } = ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent;
-        
+        public static LoggingMode FileLoggingMode = LoggingMode.WarningsErrorsInfoAndDebug;
+        public static LoggingMode ConsoleLoggingMode = LoggingMode.WarningsErrorsInfoAndDebug;
+
         public static ErrorHandlingBehaviour ErrorHandlingBehaviour
         {
             get

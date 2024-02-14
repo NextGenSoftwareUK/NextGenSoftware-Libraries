@@ -75,95 +75,92 @@ namespace NextGenSoftware.Logging
         {
             try
             {
-                if (ContinueLogging(type))
-                {
-                    string logMessage = $"{DateTime.Now} {type}: {message}";
+                string logMessage = $"{DateTime.Now} {type}: {message}";
 
+                if (ContinueConsoleLogging(type) && LogToConsole)
+                {
                     if (AddAdditionalSpaceAfterEachLogEntry)
                         logMessage = String.Concat(logMessage, "\n");
 
-                    if (LogToConsole)
+                    try
+                    {
+                        //TODO: Need to check if running on non windows enviroment here and find different logging for each platform if possible...
+                        if (showWorkingAnimation)
+                            CLIEngine.ShowWorkingMessage(message, consoleColour, false, 0);
+                        else
+
+                            CLIEngine.ShowMessage(message, consoleColour, false, false, 0);
+                    }
+                    catch (Exception e) { }
+                }
+
+                if (ContinueFileLogging(type) && LogToFile)
+                {
+                    for (int i = 1; i <= NumberOfRetriesToLogToFile; ++i)
                     {
                         try
                         {
-                            //TODO: Need to check if running on non windows enviroment here and find different logging for each platform if possible...
-                            if (showWorkingAnimation)
-                                CLIEngine.ShowWorkingMessage(message, consoleColour, false, 0);
-                            else
+                            if (!string.IsNullOrEmpty(LogDirectory) && !Directory.Exists(LogDirectory))
+                                Directory.CreateDirectory(LogDirectory);
 
-                                CLIEngine.ShowMessage(message, consoleColour, false, false, 0);
+                            if (!AddAdditionalSpaceAfterEachLogEntry)
+                                logMessage = String.Concat(logMessage, "\n");
+
+                            string fullFileName = LogFileName;
+                            FileInfo fileInfo = new FileInfo(fullFileName);
+
+                            if (File.Exists(String.Concat(LogDirectory, "\\", LogFileName)))
+                            {
+                                //Need to find the latest file.
+                                DirectoryInfo dirInfo = new DirectoryInfo(LogDirectory);
+
+                                FileInfo[] files = dirInfo.GetFiles();
+                                DateTime latestWriteTime = DateTime.MinValue;
+
+                                foreach (FileInfo file in files)
+                                {
+                                    if (file.LastWriteTime > latestWriteTime)
+                                    {
+                                        fullFileName = file.Name;
+                                        latestWriteTime = file.LastWriteTime;
+                                    }
+                                }
+
+                                fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", LogFileName));
+                                string ext = fileInfo.Extension;
+                                string[] parts = LogFileName.Split('.');
+                                string fileName = parts[0];
+
+                                fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", fullFileName));
+
+                                //If the logfile is over its max size then find the next free filename.
+                                if (fileInfo != null && fileInfo.Length > MaxLogFileSize)
+                                {
+                                    int fileNumber = 2;
+                                    bool foundFreeFile = false;
+
+                                    while (!foundFreeFile)
+                                    {
+                                        fullFileName = $"{fileName}{fileNumber}{ext}";
+
+                                        if (!File.Exists(String.Concat(LogDirectory, "\\", fullFileName)))
+                                            foundFreeFile = true;
+                                        else
+                                            fileNumber++;
+                                    }
+                                }
+                            }
+
+                            using (var stream = File.Open(String.Concat(LogDirectory, "\\", fullFileName), FileMode.Append, FileAccess.Write, FileShare.Write))
+                            {
+                                using (var writer = new StreamWriter(stream))
+                                    writer.WriteLine(logMessage);
+                            }
+                            break;
                         }
-                        catch (Exception e) { }
-                    }
-
-                    if (LogToFile)
-                    {
-                        for (int i = 1; i <= NumberOfRetriesToLogToFile; ++i)
+                        catch (IOException e) when (i <= NumberOfRetriesToLogToFile)
                         {
-                            try
-                            {
-                                if (!string.IsNullOrEmpty(LogDirectory) && !Directory.Exists(LogDirectory))
-                                    Directory.CreateDirectory(LogDirectory);
-
-                                if (!AddAdditionalSpaceAfterEachLogEntry)
-                                    logMessage = String.Concat(logMessage, "\n");
-
-                                string fullFileName = LogFileName;
-                                FileInfo fileInfo = new FileInfo(fullFileName);
-
-                                if (File.Exists(String.Concat(LogDirectory, "\\", LogFileName)))
-                                {
-                                    //Need to find the latest file.
-                                    DirectoryInfo dirInfo = new DirectoryInfo(LogDirectory);
-
-                                    FileInfo[] files = dirInfo.GetFiles();
-                                    DateTime latestWriteTime = DateTime.MinValue;
-
-                                    foreach (FileInfo file in files)
-                                    {
-                                        if (file.LastWriteTime > latestWriteTime)
-                                        {
-                                            fullFileName = file.Name;
-                                            latestWriteTime = file.LastWriteTime;
-                                        }
-                                    }
-
-                                    fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", LogFileName));
-                                    string ext = fileInfo.Extension;
-                                    string[] parts = LogFileName.Split('.');
-                                    string fileName = parts[0];
-
-                                    fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", fullFileName));
-
-                                    //If the logfile is over its max size then find the next free filename.
-                                    if (fileInfo != null && fileInfo.Length > MaxLogFileSize)
-                                    {
-                                        int fileNumber = 2;
-                                        bool foundFreeFile = false;
-
-                                        while (!foundFreeFile)
-                                        {
-                                            fullFileName = $"{fileName}{fileNumber}{ext}";
-
-                                            if (!File.Exists(String.Concat(LogDirectory, "\\", fullFileName)))
-                                                foundFreeFile = true;
-                                            else
-                                                fileNumber++;
-                                        }
-                                    }
-                                }
-
-                                using (var stream = File.Open(String.Concat(LogDirectory, "\\", fullFileName), FileMode.Append, FileAccess.Write, FileShare.Write))
-                                {
-                                    using (var writer = new StreamWriter(stream))
-                                        writer.WriteLine(logMessage);
-                                }
-                                break;
-                            }
-                            catch (IOException e) when (i <= NumberOfRetriesToLogToFile)
-                            {
-                                Thread.Sleep(RetryLoggingToFileEverySeconds * 1000);
-                            }
+                            Thread.Sleep(RetryLoggingToFileEverySeconds * 1000);
                         }
                     }
                 }

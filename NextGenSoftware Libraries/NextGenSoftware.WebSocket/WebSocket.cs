@@ -306,7 +306,8 @@ namespace NextGenSoftware.WebSocket
                 string bytesDecoded = DataHelper.DecodeBinaryDataAsUTF8(data);
                 string bytesAsString = DataHelper.ConvertBinaryDataToString(data);
 
-                Logger.Log($"Sending Raw Data... Bytes: {bytesDecoded} ({bytesAsString})", LogType.Info);
+                Logger.Log($"Sending Raw Data...", LogType.Info);
+                Logger.Log($"Bytes: {bytesDecoded} ({bytesAsString})", LogType.Debug);
 
                 //await UnityWebSocket.Send(data);
 
@@ -386,7 +387,7 @@ namespace NextGenSoftware.WebSocket
                         else
                         {
                             stringResult.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
-                            Logger.Log(string.Concat("Received Data: ", stringResult), LogType.Info);
+                            Logger.Log(string.Concat("Received Data: ", stringResult), LogType.Debug);
                             OnDataReceived?.Invoke(this, new DataReceivedEventArgs()
                             {
                                 EndPoint = EndPoint,
