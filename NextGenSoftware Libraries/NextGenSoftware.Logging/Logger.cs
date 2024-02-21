@@ -28,22 +28,22 @@ namespace NextGenSoftware.Logging
             LogProviders.AddRange(logProviders);
         }
 
-        public void Log(string message, LogType type)
+        //public void Log(string message, LogType type, bool logOnNewLine = true, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1)
+        //{
+        //    foreach (ILogProvider logger in LogProviders)
+        //        logger.Log(message, type, logOnNewLine, insertExtraNewLineAfterLogMessage, indentLogMessagesBy);
+        //}
+
+        public void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
         {
             foreach (ILogProvider logger in LogProviders)
-                logger.Log(message, type);
+                logger.Log(message, type, consoleColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
         }
 
-        public void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false)
+        public void Log(string message, LogType type, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
         {
             foreach (ILogProvider logger in LogProviders)
-                logger.Log(message, type, consoleColour, showWorkingAnimation);
-        }
-
-        public void Log(string message, LogType type, bool showWorkingAnimation = false)
-        {
-            foreach (ILogProvider logger in LogProviders)
-                logger.Log(message, type, showWorkingAnimation);
+                logger.Log(message, type, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
         }
 
         //public bool ContinueLogging(LogType type)

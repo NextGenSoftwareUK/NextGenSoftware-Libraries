@@ -7,6 +7,7 @@ namespace NextGenSoftware.CLI.Engine
 {
     public static class CLIEngine
     {
+        private static bool _nextMessageOnSameLine = false;
         public static Spinner Spinner = new Spinner();
         // public static Colorful.Console ColorfulConsole;
 
@@ -93,12 +94,18 @@ namespace NextGenSoftware.CLI.Engine
                 ConsoleColor existingColour = Console.ForegroundColor;
                 Console.ForegroundColor = color;
                 //ShowMessage(message, lineSpace, noLineBreaks, intendBy);
+                bool wasSpinnerActive = false;
 
                 if (Spinner.IsActive)
                 {
                     Spinner.Stop();
-                    Console.WriteLine("");
+                    wasSpinnerActive = true;
+                    
+                    if (!_nextMessageOnSameLine)
+                        Console.WriteLine("");
                 }
+
+                _nextMessageOnSameLine = false;
 
                 if (lineSpace)
                     Console.WriteLine(" ");
@@ -110,7 +117,14 @@ namespace NextGenSoftware.CLI.Engine
                 if (noLineBreaks)
                     Console.Write(string.Concat(indent, message));
                 else
+                {
+                    // if (wasSpinnerActive)
+                    //     Console.WriteLine("");
+
+                   
                     Console.WriteLine(string.Concat(indent, message));
+                    //Console.WriteLine("");
+                }
 
                 Console.ForegroundColor = existingColour;
             }
@@ -120,12 +134,13 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
-        public static void ShowWorkingMessage(string message, bool lineSpace = true, int intendBy = 1)
+        public static void ShowWorkingMessage(string message, bool lineSpace = true, int intendBy = 1, bool nextMessageOnSameLine = false)
         {
             try
             {
                 ShowMessage(message, WorkingMessageColour, lineSpace, true, intendBy);
                 Spinner.Start();
+                _nextMessageOnSameLine = nextMessageOnSameLine;
             }
             catch (Exception ex)
             {
@@ -133,12 +148,13 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
-        public static void ShowWorkingMessage(string message, ConsoleColor color, bool lineSpace = true, int intendBy = 1)
+        public static void ShowWorkingMessage(string message, ConsoleColor color, bool lineSpace = true, int intendBy = 1, bool nextMessageOnSameLine = false)
         {
             try
             {
                 ShowMessage(message, color, lineSpace, true, intendBy);
                 Spinner.Start();
+                _nextMessageOnSameLine = nextMessageOnSameLine;
             }
             catch (Exception ex)
             {

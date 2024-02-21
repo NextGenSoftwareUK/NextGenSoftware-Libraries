@@ -8,16 +8,17 @@ using NextGenSoftware.WebSocket;
 
 namespace NextGenSoftware.Logging
 {
-    public class DefaultLogProvider : LogProviderBase, ILogProvider, IDefaultLogProvider
+    public class DefaultLogProvider : LogProviderBase, ILogProvider
     {
-        public DefaultLogProvider(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", int maxLogFileSize = 1000000, bool addAdditionalSpaceAfterEachLogEntry = false, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
+        public DefaultLogProvider(bool logToConsole = true, bool logToFile = true, string pathToLogFile = "Logs", string logFileName = "Log.txt", int maxLogFileSize = 1000000, bool insertExtraNewLineAfterLogMessage = false, int indentLogMessagesBy = 1, bool showColouredLogs = true, ConsoleColor debugColour = ConsoleColor.White, ConsoleColor infoColour = ConsoleColor.Green, ConsoleColor warningColour = ConsoleColor.Yellow, ConsoleColor errorColour = ConsoleColor.Red, int numberOfRetriesToLogToFile = 3, int retryLoggingToFileEverySeconds = 1)
         {
             MaxLogFileSize = maxLogFileSize;
             LogDirectory = pathToLogFile;
             LogFileName = logFileName;
             LogToConsole = logToConsole;
             LogToFile = logToFile;
-            AddAdditionalSpaceAfterEachLogEntry = addAdditionalSpaceAfterEachLogEntry;
+            InsertExtraNewLineAfterLogMessage = insertExtraNewLineAfterLogMessage;
+            IndentLogMessagesBy = indentLogMessagesBy;
             ShowColouredLogs = showColouredLogs;
             DebugColour = debugColour;
             InfoColour = infoColour;
@@ -37,33 +38,35 @@ namespace NextGenSoftware.Logging
         public string LogFileName { get; set; }
         public bool LogToConsole { get; set; }
         public bool LogToFile { get; set; }
-        public bool AddAdditionalSpaceAfterEachLogEntry { get; set; } = false;
+        //public bool AddAdditionalSpaceAfterEachLogEntry { get; set; } = true;
+        public int IndentLogMessagesBy { get; set; } = 1;
+        public bool InsertExtraNewLineAfterLogMessage { get; set; } = true;
         public static bool ShowColouredLogs { get; set; } = true;
         public static ConsoleColor DebugColour { get; set; } = ConsoleColor.White;
         public static ConsoleColor InfoColour { get; set; } = ConsoleColor.Green;
         public static ConsoleColor WarningColour { get; set; } = ConsoleColor.Yellow;
         public static ConsoleColor ErrorColour { get; set; } = ConsoleColor.Red;
 
-        public void Log(string message, LogType type, bool showWorkingAnimation = false)
+        public void Log(string message, LogType type, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
         {
             if (ShowColouredLogs)
             {
                 switch (type)
                 {
                     case LogType.Debug:
-                        Log(message, type, DebugColour, showWorkingAnimation);
+                        Log(message, type, DebugColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
                         break;
 
                     case LogType.Info:
-                        Log(message, type, InfoColour, showWorkingAnimation);
+                        Log(message, type, InfoColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
                         break;
 
                     case LogType.Warning:
-                        Log(message, type, WarningColour, showWorkingAnimation);
+                        Log(message, type, WarningColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
                         break;
 
                     case LogType.Error:
-                        Log(message, type, ErrorColour, showWorkingAnimation);
+                        Log(message, type, ErrorColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
                         break;
                 }
             }
@@ -71,25 +74,32 @@ namespace NextGenSoftware.Logging
                 Log(message, type, ConsoleColor.White, showWorkingAnimation);
         }
 
-        public void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false)
+        public void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
         {
             try
             {
                 string logMessage = $"{DateTime.Now} {type}: {message}";
 
+                if (!indentLogMessagesBy.HasValue)
+                    indentLogMessagesBy = IndentLogMessagesBy;
+
                 if (ContinueConsoleLogging(type) && LogToConsole)
                 {
-                    if (AddAdditionalSpaceAfterEachLogEntry)
-                        logMessage = String.Concat(logMessage, "\n");
+                    //message = String.Concat("\n", message);
+
+                   // if (!nextMessageOnSameLine && !showWorkingAnimation)
+                   //     insertExtraNewLineAfterLogMessage = true; //TEMP!
+
+                    if (InsertExtraNewLineAfterLogMessage || insertExtraNewLineAfterLogMessage)
+                        message = String.Concat(message, "\n");
 
                     try
                     {
                         //TODO: Need to check if running on non windows enviroment here and find different logging for each platform if possible...
                         if (showWorkingAnimation)
-                            CLIEngine.ShowWorkingMessage(message, consoleColour, false, 0);
+                            CLIEngine.ShowWorkingMessage(message, consoleColour, false, indentLogMessagesBy.Value, nextMessageOnSameLine);
                         else
-
-                            CLIEngine.ShowMessage(message, consoleColour, false, false, 0);
+                            CLIEngine.ShowMessage(message, consoleColour, false, noLineBreaks, indentLogMessagesBy.Value);
                     }
                     catch (Exception e) { }
                 }
@@ -103,7 +113,10 @@ namespace NextGenSoftware.Logging
                             if (!string.IsNullOrEmpty(LogDirectory) && !Directory.Exists(LogDirectory))
                                 Directory.CreateDirectory(LogDirectory);
 
-                            if (!AddAdditionalSpaceAfterEachLogEntry)
+                            for (int p = 0; p < indentLogMessagesBy; p++)
+                                logMessage = $" {logMessage}";
+
+                            if (InsertExtraNewLineAfterLogMessage || insertExtraNewLineAfterLogMessage)
                                 logMessage = String.Concat(logMessage, "\n");
 
                             string fullFileName = LogFileName;

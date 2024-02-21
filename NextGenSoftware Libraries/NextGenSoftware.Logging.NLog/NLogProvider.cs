@@ -1,10 +1,10 @@
 ﻿namespace NextGenSoftware.Logging.NLogger
 {
-    public class NLogProvider : ILogProvider, INLogProvider
+    public class NLogProvider //: ILogProvider, INLogProvider
     {
         private static readonly NLog.Logger _logger = NLog.LogManager.GetCurrentClassLogger();
 
-        public void Log(string message, LogType type, bool showWorkingAnimation = false)
+        public void Log(string message, LogType type, bool showWorkingAnimation = false, bool logOnNewLine = true, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1)
         {
             switch (type)
             {
@@ -26,7 +26,7 @@
             }
         }
 
-        public void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false)
+        public void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false, bool logOnNewLine = true, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1)
         {
             //TODO: Need to add colour support to NLog later... for now if you want animated coloured console output then use the DefaultLogger (much simpler to use and config than NLog! ;-) Why I created Logging project in the 1st place! )... ;-)
             Log(message, type);

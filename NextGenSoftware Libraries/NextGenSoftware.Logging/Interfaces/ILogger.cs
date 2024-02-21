@@ -9,8 +9,7 @@ namespace NextGenSoftware.Logging.Interfaces
 
         void AddLogProvider(ILogProvider logProvider);
         void AddLogProviders(IEnumerable<ILogProvider> logProviders);
-        void Log(string message, LogType type);
-        void Log(string message, LogType type, bool showWorkingAnimation = false);
-        void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false);
+        void Log(string message, LogType type, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false);
+        void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false);
     }
 }
