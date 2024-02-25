@@ -14,6 +14,7 @@ namespace NextGenSoftware.WebSocket
 {
     public class WebSocket : IWebSocket
     {
+        private Thread _backgroundThread;
         private bool _connecting = false;
         private bool _disconnecting = false;
         private CancellationTokenSource _cancellationTokenSource = new CancellationTokenSource();
@@ -223,6 +224,10 @@ namespace NextGenSoftware.WebSocket
                         Logger.Log(string.Concat("Connected to ", EndPoint.AbsoluteUri), LogType.Info);
                         OnConnected?.Invoke(this, new ConnectedEventArgs { EndPoint = EndPoint });
                         _connecting = false;
+
+                        //_backgroundThread = new Thread(new ThreadStart(StartListenAsync));
+                        //_backgroundThread.Start();
+
                         //await StartListenAsync();
                         StartListenAsync();
                     }
@@ -266,6 +271,9 @@ namespace NextGenSoftware.WebSocket
                     {
 
                     }
+
+                    //Wait till the thread has terminated.
+                    //_backgroundThread?.Join();
 
                     if (ClientWebSocket.State == WebSocketState.Closed)
                     {
@@ -346,88 +354,93 @@ namespace NextGenSoftware.WebSocket
         }
 
 
-        private async Task StartListenAsync()
+        //private async Task StartListenAsync()
+        private void StartListenAsync()
         {
-            var buffer = new byte[Config.ReceiveChunkSize];
-            Logger.Log(string.Concat("Listening on ", EndPoint, "..."), LogType.Info, true);
-
-            try
+            Task.Run(async () =>
             {
-                while (ClientWebSocket != null && ClientWebSocket.State == WebSocketState.Open)
-                {
-                    var stringResult = new StringBuilder();
-                    List<byte> dataResponse = new List<byte>();
+                var buffer = new byte[Config.ReceiveChunkSize];
+                Logger.Log(string.Concat("Listening on ", EndPoint, "..."), LogType.Info, true);
 
-                    WebSocketReceiveResult result;
-                    do
+                try
+                {
+                    while (ClientWebSocket != null && ClientWebSocket.State == WebSocketState.Open)
                     {
-                        if (ClientWebSocket.State != WebSocketState.Open)
-                            break;
+                        var stringResult = new StringBuilder();
+                        List<byte> dataResponse = new List<byte>();
 
-                        if (Config.NeverTimeOut)
-                            result = await ClientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-                        else
+                        WebSocketReceiveResult result;
+                        do
                         {
-                            using (var cts = new CancellationTokenSource((Config.TimeOutSeconds) * 1000))
-                                result = await ClientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
-                        }
+                            if (ClientWebSocket.State != WebSocketState.Open)
+                                break;
 
-                        if (result.MessageType == WebSocketMessageType.Close)
-                        {
-                            if (!_disconnecting && ClientWebSocket != null)
+                            if (Config.NeverTimeOut)
+                                result = await ClientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+                            else
                             {
-                                string msg = "Closing because received close message."; //TODO: Move all strings to constants at top or resources.strings
-                                await ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, msg, CancellationToken.None);
-                                OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = msg });
-                                Logger.Log(msg, LogType.Info);
-
-                                //AttemptReconnect(); //TODO: Not sure re-connect here?
+                                using (var cts = new CancellationTokenSource((Config.TimeOutSeconds) * 1000))
+                                    result = await ClientWebSocket.ReceiveAsync(new ArraySegment<byte>(buffer), cts.Token);
                             }
-                        }
-                        else
-                        {
-                            stringResult.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
-                            Logger.Log(string.Concat("Received Data: ", stringResult), LogType.Debug);
-                            OnDataReceived?.Invoke(this, new DataReceivedEventArgs()
+
+                            if (result.MessageType == WebSocketMessageType.Close)
                             {
-                                EndPoint = EndPoint,
-                                //IsCallSuccessful = true,
-                                RawBinaryData = buffer,
-                                RawBinaryDataAsString = DataHelper.ConvertBinaryDataToString(buffer),
-                                RawBinaryDataDecoded = DataHelper.DecodeBinaryDataAsUTF8(buffer),
-                                RawJSONData = stringResult.ToString(),
-                                WebSocketResult = result
-                            });
-                        }
-                    } while (!result.EndOfMessage);
-                }
-            }
+                                if (!_disconnecting && ClientWebSocket != null)
+                                {
+                                    string msg = "Closing because received close message."; //TODO: Move all strings to constants at top or resources.strings
+                                    await ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, msg, CancellationToken.None);
+                                    OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = msg });
+                                    Logger.Log(msg, LogType.Info);
 
-            catch (TaskCanceledException ex)
-            {
-                if (!_connecting && !_disconnecting)
+                                    //AttemptReconnect(); //TODO: Not sure re-connect here?
+                                }
+                            }
+                            else
+                            {
+                                stringResult.Append(Encoding.UTF8.GetString(buffer, 0, result.Count));
+                                Logger.Log(string.Concat("Received Data: ", stringResult), LogType.Debug);
+                                OnDataReceived?.Invoke(this, new DataReceivedEventArgs()
+                                {
+                                    EndPoint = EndPoint,
+                                    //IsCallSuccessful = true,
+                                    RawBinaryData = buffer,
+                                    RawBinaryDataAsString = DataHelper.ConvertBinaryDataToString(buffer),
+                                    RawBinaryDataDecoded = DataHelper.DecodeBinaryDataAsUTF8(buffer),
+                                    RawJSONData = stringResult.ToString(),
+                                    WebSocketResult = result
+                                });
+                            }
+                        } while (!result.EndOfMessage);
+                    }
+                }
+
+
+                catch (TaskCanceledException ex)
                 {
-                    string msg = string.Concat("Error occurred in WebSocket.StartListen method. Connection timed out after ", (Config.TimeOutSeconds), " seconds.");
-                    OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = msg });
-                    HandleError(msg, ex);
-                    await AttemptReconnectAsync();
+                    if (!_connecting && !_disconnecting)
+                    {
+                        string msg = string.Concat("Error occurred in WebSocket.StartListen method. Connection timed out after ", (Config.TimeOutSeconds), " seconds.");
+                        OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = msg });
+                        HandleError(msg, ex);
+                        await AttemptReconnectAsync();
+                    }
                 }
-            }
 
-            catch (Exception ex)
-            {
-                if (!_connecting && !_disconnecting)
+                catch (Exception ex)
                 {
-                    OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = string.Concat("Error occurred: ", ex) });
-                    HandleError("Error occurred in WebSocket.StartListen method. Disconnected because an error occurred.", ex);
-                    await AttemptReconnectAsync();
+                    if (!_connecting && !_disconnecting)
+                    {
+                        OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = string.Concat("Error occurred: ", ex) });
+                        HandleError("Error occurred in WebSocket.StartListen method. Disconnected because an error occurred.", ex);
+                        await AttemptReconnectAsync();
+                    }
                 }
-            }
 
-            finally
-            {
-                //ClientWebSocket.Dispose();
-            }
+                finally
+                {
+                    //ClientWebSocket.Dispose();
+                }
+            }).Wait();
         }
 
         private async Task AttemptReconnectAsync()
