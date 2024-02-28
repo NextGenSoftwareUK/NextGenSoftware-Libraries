@@ -354,11 +354,11 @@ namespace NextGenSoftware.WebSocket
         }
 
 
-        //private async Task StartListenAsync()
-        private void StartListenAsync()
+        private async Task StartListenAsync()
+        //private void StartListenAsync()
         {
-            Task.Run(async () =>
-            {
+           // Task.Run(async () =>
+           // {
                 var buffer = new byte[Config.ReceiveChunkSize];
                 Logger.Log(string.Concat("Listening on ", EndPoint, "..."), LogType.Info, true);
 
@@ -440,7 +440,7 @@ namespace NextGenSoftware.WebSocket
                 {
                     //ClientWebSocket.Dispose();
                 }
-            }).Wait();
+           // }).Wait();
         }
 
         private async Task AttemptReconnectAsync()
