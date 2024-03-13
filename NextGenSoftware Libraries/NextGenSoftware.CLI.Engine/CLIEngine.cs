@@ -15,6 +15,7 @@ namespace NextGenSoftware.CLI.Engine
         public static ConsoleColor ErrorMessageColour { get; set; } = ConsoleColor.Red;
         public static ConsoleColor MessageColour { get; set; } = ConsoleColor.Yellow;
         public static ConsoleColor WorkingMessageColour { get; set; } = ConsoleColor.Yellow;
+        public static bool SupressConsoleLogging { get; set; } = false;
 
         //public static ErrorHandlingBehaviour ErrorHandlingBehaviour { get; set; } = ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent;
         public static ErrorHandlingBehaviour ErrorHandlingBehaviour
@@ -91,6 +92,9 @@ namespace NextGenSoftware.CLI.Engine
         {
             try
             {
+                if (SupressConsoleLogging)
+                    return;
+
                 ConsoleColor existingColour = Console.ForegroundColor;
                 Console.ForegroundColor = color;
                 //ShowMessage(message, lineSpace, noLineBreaks, intendBy);
@@ -138,6 +142,9 @@ namespace NextGenSoftware.CLI.Engine
         {
             try
             {
+                if (SupressConsoleLogging)
+                    return;
+
                 ShowMessage(message, WorkingMessageColour, lineSpace, true, intendBy);
                 Spinner.Start();
                 _nextMessageOnSameLine = nextMessageOnSameLine;
@@ -152,6 +159,9 @@ namespace NextGenSoftware.CLI.Engine
         {
             try
             {
+                if (SupressConsoleLogging)
+                    return;
+
                 ShowMessage(message, color, lineSpace, true, intendBy);
                 Spinner.Start();
                 _nextMessageOnSameLine = nextMessageOnSameLine;
