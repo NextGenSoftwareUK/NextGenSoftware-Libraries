@@ -116,6 +116,11 @@ namespace NextGenSoftware.WebSocket
                 Logger = new Logger();
         }
 
+        //public void RecycleWebSocket()
+        //{
+        //    ClientWebSocket = new ClientWebSocket();
+        //}
+
         private void Init()
         {
             try
@@ -203,11 +208,11 @@ namespace NextGenSoftware.WebSocket
 
                 this.EndPoint = endpoint;
 
-                if (ClientWebSocket == null)
-                {
+                //if (ClientWebSocket == null)
+                //{
                     ClientWebSocket = new ClientWebSocket(); // The original built-in HoloNET WebSocket
                     ClientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(Config.KeepAliveSeconds);
-                }
+                //}
 
                 if (ClientWebSocket.State != WebSocketState.Connecting && ClientWebSocket.State != WebSocketState.Open && ClientWebSocket.State != WebSocketState.Aborted)
                 {
