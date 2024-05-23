@@ -172,6 +172,26 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
+        public static void BeginWorkingMessage(string message, ConsoleColor consoleColour)
+        {
+            ShowWorkingMessage(message, consoleColour, false, 1, true);
+        }
+
+        public static void BeginWorkingMessage(string message)
+        {
+            ShowWorkingMessage(message, WorkingMessageColour, false, 1, true);
+        }
+
+        public static void EndWorkingMessage(string message, ConsoleColor consoleColour)
+        {
+            ShowMessage(message, consoleColour, false, false, 0);
+        }
+
+        public static void EndWorkingMessage(string message)
+        {
+            ShowMessage(message, WorkingMessageColour, false, false, 0);
+        }
+
         public static void ShowErrorMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1)
         {
             try
