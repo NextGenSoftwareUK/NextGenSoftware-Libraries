@@ -14,18 +14,28 @@
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>websocket;net;unity</PackageTags>
 	  <PackageReleaseNotes>
-		  - Upgraded to .NET 7.
-		  - Corrected typeos in error handling.
-		  - Added intelisense documentation to WebSocketConfig.
+		  - Upgraded to .NET 8.
+		  - Fixed multiple bugs including a re-connect issue, disconnect bugs &amp; more.
+		  - Improved error handling/reporting.
+		  - Add OnDataSent event.
+		  - EndPoint property is now a URI instead of string.
+		  - Connect method renamed to ConnectAsync.
+		  - Disconnect method renamed to DisconnectAsync.
+		  - EndPoint is now passed into the ConenctAsync method rather than the constructor.
+		  - As part of the upgrades to the logging system used in the NextGenSoftware.Logging lib a new Logger property has also been added.
+		  - Integrated the new NextGenSoftware.ErrorHandling lib.
+		  - IWebSocket interface added.
+		  - IsWarning property added to CallBackBaseEventArgs.
+		  - Other misc changes.
 	  </PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
 	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
-	  <Copyright>Copyright © NextGen Software Ltd 2022</Copyright>
+	  <Copyright>Copyright © NextGen Software Ltd 2022 - 2024</Copyright>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	  <Version>1.2.0</Version>
+	  <Version>2.0.0</Version>
 	  <!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 

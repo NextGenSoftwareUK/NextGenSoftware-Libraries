@@ -1,7 +1,7 @@
 ﻿
 namespace NextGenSoftware.Logging
 {
-    public class LogProviderBase
+    public abstract class LogProviderBase
     {
         protected bool ContinueFileLogging(LogType type)
         {

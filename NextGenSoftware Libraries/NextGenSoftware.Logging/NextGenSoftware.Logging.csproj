@@ -14,17 +14,29 @@
 		<Authors>David Ellams (NextGen Software Ltd)</Authors>
 		<PackageTags>logging;net;unity</PackageTags>
 		<PackageReleaseNotes>
-			- Upgraded to .NET 7.
-			- Corrected typeos in error handling.
+			- Upgraded to .NET 8.
+			- Re-built with many improvements &amp; new features.
+			- Loggers are now called LogProviders.
+			- Added AddLogProvider method overloads.
+			- Added new ILogger interface.
+			- Added FileLoggingMode &amp; ConsoleLoggingMode to LogConfig.
+			- Integrated the new NextGenSoftware.ErrorHandling lib.
+			- Added LogProviderBase which all LogProviders must extend.
+			- Added NumberOfRetriesToLogToFile &amp; RetryLoggingToFileEverySeconds to DefaultLogger.
+			- Added MaxLogFileSize to DefaultLogger so you can set the maximum file size a log can be before it will start logging to a new file.
+			- Added IndentLogMessagesBy to DefaultLogger.
+			- Renamed AddAdditionalSpaceAfterEachLogEntry to InsertExtraNewLineAfterLogMessage.
+			- Added IDefaultLogProvider interface.
+			- Multiple bug fixes.
 		</PackageReleaseNotes>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
-		<Copyright>Copyright © NextGen Software Ltd 2022</Copyright>
+		<Copyright>Copyright © NextGen Software Ltd 2022 - 2044</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-		<Version>1.2.0</Version>
+		<Version>2.0.0</Version>
 		<!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
 	</PropertyGroup>
 

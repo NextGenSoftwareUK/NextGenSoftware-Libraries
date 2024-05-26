@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
 	<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	<PackageId>NextGenSoftware.Utilities</PackageId>
 	<Company>NextGen Software Ltd</Company>
@@ -14,17 +14,19 @@
 	<Authors>David Ellams (NextGen Software Ltd)</Authors>
 	<PackageTags>utilities;net;unity</PackageTags>
 	<PackageReleaseNotes>
-		- Upgraded to .NET 7.
-		- Corrected typeos in error handling.
+		- Upgraded to .NET 8.
+		- Added ObjectToByteArray function to DataHelper.
+		- Fixed bugs in ConvertBinaryDataToString &amp; DecodeBinaryDataAsUTF8 functions in DataHelper.
+		- Added new ExpandoObjectHelpers.
 	</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
 	<RepositoryUrl>https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK</RepositoryUrl>
-	<Copyright>Copyright © NextGen Software Ltd 2022</Copyright>
+	<Copyright>Copyright © NextGen Software Ltd 2022 - 2024</Copyright>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	<Version>1.1.0</Version>
+	<Version>1.2.1</Version>
 	<!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 
