@@ -12,7 +12,7 @@ using NextGenSoftware.WebSocket.Interfaces;
 
 namespace NextGenSoftware.WebSocket
 {
-    public class WebSocket : IWebSocket
+    public class WebSocket// : IWebSocket
     {
         private Thread _backgroundThread;
         private bool _connecting = false;
@@ -39,8 +39,9 @@ namespace NextGenSoftware.WebSocket
 
         // Properties
         public Uri EndPoint { get; set; }
-        public ClientWebSocket ClientWebSocket { get; set; } // Original HoloNET WebSocket (still works):
-                                                             //public UnityWebSocket UnityWebSocket { get; private set; } //Temporily using UnityWebSocket code until can find out why not working with RSM Conductor...
+        //public ClientWebSocket ClientWebSocket { get; set; } // Original HoloNET WebSocket (still works):
+        
+        public UnityWebSocket UnityWebSocket { get; private set; } //Temporily using UnityWebSocket code until can find out why not working with RSM Conductor...
 
         public WebSocketConfig Config
         {
@@ -61,12 +62,15 @@ namespace NextGenSoftware.WebSocket
         {
             get
             {
-                if (ClientWebSocket != null)
-                    return ClientWebSocket.State;
+                //if (ClientWebSocket != null)
+                //    return ClientWebSocket.State;
+                //else
+                //    return WebSocketState.Closed;
+
+                if (UnityWebSocket != null)
+                    return UnityWebSocket.ClientWebSocket.State;
                 else
                     return WebSocketState.Closed;
-
-                //return UnityWebSocket.ClientWebSocket.State;
             }
         }
 
@@ -128,16 +132,8 @@ namespace NextGenSoftware.WebSocket
                 if (Logger.LogProviders.Count == 0)
                     Logger.AddLogProvider(new DefaultLogProvider());
 
-                ClientWebSocket = new ClientWebSocket(); // The original built-in HoloNET WebSocket
-                ClientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(Config.KeepAliveSeconds);
-
-                //UnityWebSocket = new UnityWebSocket(EndPoint); //The Unity Web Socket code I ported wraps around the ClientWebSocket.
-                //UnityWebSocket.OnOpen += UnityWebSocket_OnOpen;
-                //UnityWebSocket.OnClose += UnityWebSocket_OnClose;
-
-                //UnityWebSocket.OnError += UnityWebSocket_OnError;
-                //UnityWebSocket.OnMessage += UnityWebSocket_OnMessage;
-
+               // ClientWebSocket = new ClientWebSocket(); // The original built-in HoloNET WebSocket
+               // ClientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(Config.KeepAliveSeconds);
 
                 _cancellationToken = _cancellationTokenSource.Token; //TODO: do something with this!
             }
@@ -148,182 +144,196 @@ namespace NextGenSoftware.WebSocket
         }
 
 
-        //private void UnityWebSocket_OnMessage(byte[] data)
-        //{
-        //    //OnDataReceived?.Invoke(this, new DataReceivedEventArgs("1", EndPoint, true, data, null, null));
-        //    OnDataReceived?.Invoke(this, new DataReceivedEventArgs()
-        //    {
-        //        EndPoint = EndPoint,
-        //        Id = "1",
-        //        IsCallSuccessful = true,
-        //        RawBinaryData = data
-        //    });
-        //}
-
-        //private void UnityWebSocket_OnError(string errorMsg)
-        //{
-        //    OnError?.Invoke(this, new WebSocketErrorEventArgs() { EndPoint = EndPoint, Reason = errorMsg });
-        //}
-
-        //private void UnityWebSocket_OnClose(WebSocketCloseCode closeCode)
-        //{
-        //    OnDisconnected?.Invoke(this, new DisconnectedEventArgs() { EndPoint = EndPoint, Reason = closeCode.ToString() });
-        //}
-
-        //private void UnityWebSocket_OnOpen()
-        //{
-        //    OnConnected?.Invoke(this, new ConnectedEventArgs { EndPoint = EndPoint });
-        //}
-
-
-        //public async Task Connect()
-        //{
-        //    await UnityWebSocket.Connect();
-        //   // await UnityWebSocket.Receive();
-        //}
-
-
-        /// <summary>
-        /// Connects to the specefied Endpoint.
-        /// </summary>
-        /// <param name="endpoint"></param>
-        /// <returns></returns>
-        public async Task ConnectAsync(string endpoint)
+        private void UnityWebSocket_OnMessage(byte[] data)
         {
-            await ConnectAsync(new Uri(endpoint));
+            //OnDataReceived?.Invoke(this, new DataReceivedEventArgs("1", EndPoint, true, data, null, null));
+            OnDataReceived?.Invoke(this, new DataReceivedEventArgs()
+            {
+                EndPoint = EndPoint,
+                RawBinaryData = data
+            });
+        }
+
+        private void UnityWebSocket_OnError(string errorMsg)
+        {
+            OnError?.Invoke(this, new WebSocketErrorEventArgs() { EndPoint = EndPoint, Reason = errorMsg });
+        }
+
+        private void UnityWebSocket_OnClose(WebSocketCloseCode closeCode)
+        {
+            OnDisconnected?.Invoke(this, new DisconnectedEventArgs() { EndPoint = EndPoint, Reason = closeCode.ToString() });
+        }
+
+        private void UnityWebSocket_OnOpen()
+        {
+            OnConnected?.Invoke(this, new ConnectedEventArgs { EndPoint = EndPoint });
         }
 
 
-        /// <summary>
-        /// Connects to the specefied Endpoint.
-        /// </summary>
-        /// <param name="endpoint"></param>
-        /// <returns></returns>
         public async Task ConnectAsync(Uri endpoint)
         {
-            try
+            if (UnityWebSocket == null)
             {
-                if (Logger.LogProviders.Count == 0)
-                    throw new WebSocketException("ERROR: No LogProvider Has Been Specified! Please set a LogProvider with the Logger.AddLogProvider method.");
+                UnityWebSocket = new UnityWebSocket(endpoint.AbsoluteUri); //The Unity Web Socket code I ported wraps around the ClientWebSocket.
+                UnityWebSocket.OnOpen += UnityWebSocket_OnOpen;
+                UnityWebSocket.OnClose += UnityWebSocket_OnClose;
 
-                this.EndPoint = endpoint;
-
-                //if (ClientWebSocket == null)
-                //{
-                    ClientWebSocket = new ClientWebSocket(); // The original built-in HoloNET WebSocket
-                    ClientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(Config.KeepAliveSeconds);
-                //}
-
-                if (ClientWebSocket.State != WebSocketState.Connecting && ClientWebSocket.State != WebSocketState.Open && ClientWebSocket.State != WebSocketState.Aborted)
-                {
-                    Logger.Log(string.Concat("Connecting to ", EndPoint, "..."), LogType.Info, true);
-
-                    _connecting = true;
-                    await ClientWebSocket.ConnectAsync(EndPoint, CancellationToken.None);
-                    //NetworkServiceProvider.Connect(new Uri(EndPoint));
-                    //TODO: need to be able to await this.
-
-                    //if (NetworkServiceProvider.NetSocketState == NetSocketState.Open)
-                    if (ClientWebSocket.State == WebSocketState.Open)
-                    {
-                        Logger.Log(string.Concat("Connected to ", EndPoint.AbsoluteUri), LogType.Info);
-                        OnConnected?.Invoke(this, new ConnectedEventArgs { EndPoint = EndPoint });
-                        _connecting = false;
-
-                        //_backgroundThread = new Thread(new ThreadStart(StartListenAsync));
-                        //_backgroundThread.Start();
-
-                        //await StartListenAsync();
-                        StartListenAsync();
-                    }
-                }
+                UnityWebSocket.OnError += UnityWebSocket_OnError;
+                UnityWebSocket.OnMessage += UnityWebSocket_OnMessage;
             }
-            catch (Exception e)
-            {
-                HandleError(string.Concat("Error occurred in WebSocket.Connect method connecting to ", EndPoint), e);
-            }
+
+            await UnityWebSocket.Connect();
+            // await UnityWebSocket.Receive();
         }
 
         public async Task DisconnectAsync()
         {
-            try
+            if (UnityWebSocket != null)
             {
-                if (Logger.LogProviders.Count == 0)
-                    throw new WebSocketException("ERROR: No LogProvider Has Been Specified! Please set a LogProvider with the Logger.AddLogProvider method.");
-
-                //if (UnityWebSocket.ClientWebSocket != null && UnityWebSocket.ClientWebSocket.State != WebSocketState.Connecting && UnityWebSocket.ClientWebSocket.State != WebSocketState.Closed && UnityWebSocket.ClientWebSocket.State != WebSocketState.Aborted && UnityWebSocket.ClientWebSocket.State != WebSocketState.CloseSent && UnityWebSocket.ClientWebSocket.State != WebSocketState.CloseReceived)
-                //{
-                //    Logger.Log(string.Concat("Disconnecting from ", EndPoint, "..."), LogType.Info, true);
-                //    await UnityWebSocket.ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client manually disconnected.", CancellationToken.None);
-
-                //    if (UnityWebSocket.ClientWebSocket.State == WebSocketState.Closed)
-                //    {
-                //        Logger.Log(string.Concat("Disconnected from ", EndPoint), LogType.Info);
-                //        OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = "Disconnected Method Called." });
-                //    }
-                //}
-
-                if (ClientWebSocket != null && ClientWebSocket.State != WebSocketState.Connecting && ClientWebSocket.State != WebSocketState.Closed && ClientWebSocket.State != WebSocketState.Aborted && ClientWebSocket.State != WebSocketState.CloseSent && ClientWebSocket.State != WebSocketState.CloseReceived)
-                {
-                    Logger.Log(string.Concat("Disconnecting from ", EndPoint, "..."), LogType.Info, false);
-                    _disconnecting = true;
-
-                    try
-                    {
-                        await ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client manually disconnected.", CancellationToken.None);
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-
-                    //Wait till the thread has terminated.
-                    //_backgroundThread?.Join();
-
-                    if (ClientWebSocket.State == WebSocketState.Closed)
-                    {
-                        _disconnecting = false;
-                        Logger.Log(string.Concat("Disconnected from ", EndPoint), LogType.Info);
-
-                        if (!_connecting && ClientWebSocket != null)
-                        {
-                            ClientWebSocket.Dispose();
-                            ClientWebSocket = null;
-                        }
-
-                        OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = "Disconnected Method Called." });
-                    }
-                }
-            }
-            catch (Exception e)
-            {
-                HandleError(string.Concat("Error occurred in WebSocket.Disconnect disconnecting from ", EndPoint), e);
-            }
-            finally
-            {
-                if (!_connecting && ClientWebSocket != null)
-                {
-                    ClientWebSocket.Dispose();
-                    ClientWebSocket = null;
-                }
+                UnityWebSocket.Close();
             }
         }
+
+        /// <summary>
+        /// Connects to the specefied Endpoint.
+        /// </summary>
+        /// <param name="endpoint"></param>
+        ///// <returns></returns>
+        //public async Task ConnectAsync(string endpoint)
+        //{
+        //    await ConnectAsync(new Uri(endpoint));
+        //}
+
+
+        ///// <summary>
+        ///// Connects to the specefied Endpoint.
+        ///// </summary>
+        ///// <param name="endpoint"></param>
+        ///// <returns></returns>
+        //public async Task ConnectAsync(Uri endpoint)
+        //{
+        //    try
+        //    {
+        //        if (Logger.LogProviders.Count == 0)
+        //            throw new WebSocketException("ERROR: No LogProvider Has Been Specified! Please set a LogProvider with the Logger.AddLogProvider method.");
+
+        //        this.EndPoint = endpoint;
+
+        //        //if (ClientWebSocket == null)
+        //        //{
+        //            ClientWebSocket = new ClientWebSocket(); // The original built-in HoloNET WebSocket
+        //            ClientWebSocket.Options.KeepAliveInterval = TimeSpan.FromSeconds(Config.KeepAliveSeconds);
+        //        //}
+
+        //        if (ClientWebSocket.State != WebSocketState.Connecting && ClientWebSocket.State != WebSocketState.Open && ClientWebSocket.State != WebSocketState.Aborted)
+        //        {
+        //            Logger.Log(string.Concat("Connecting to ", EndPoint, "..."), LogType.Info, true);
+
+        //            _connecting = true;
+        //            await ClientWebSocket.ConnectAsync(EndPoint, CancellationToken.None);
+        //            //NetworkServiceProvider.Connect(new Uri(EndPoint));
+        //            //TODO: need to be able to await this.
+
+        //            //if (NetworkServiceProvider.NetSocketState == NetSocketState.Open)
+        //            if (ClientWebSocket.State == WebSocketState.Open)
+        //            {
+        //                Logger.Log(string.Concat("Connected to ", EndPoint.AbsoluteUri), LogType.Info);
+        //                OnConnected?.Invoke(this, new ConnectedEventArgs { EndPoint = EndPoint });
+        //                _connecting = false;
+
+        //                //_backgroundThread = new Thread(new ThreadStart(StartListenAsync));
+        //                //_backgroundThread.Start();
+
+        //                //await StartListenAsync();
+        //                StartListenAsync();
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        HandleError(string.Concat("Error occurred in WebSocket.Connect method connecting to ", EndPoint), e);
+        //    }
+        //}
+
+        //public async Task DisconnectAsync()
+        //{
+        //    try
+        //    {
+        //        if (Logger.LogProviders.Count == 0)
+        //            throw new WebSocketException("ERROR: No LogProvider Has Been Specified! Please set a LogProvider with the Logger.AddLogProvider method.");
+
+        //        //if (UnityWebSocket.ClientWebSocket != null && UnityWebSocket.ClientWebSocket.State != WebSocketState.Connecting && UnityWebSocket.ClientWebSocket.State != WebSocketState.Closed && UnityWebSocket.ClientWebSocket.State != WebSocketState.Aborted && UnityWebSocket.ClientWebSocket.State != WebSocketState.CloseSent && UnityWebSocket.ClientWebSocket.State != WebSocketState.CloseReceived)
+        //        //{
+        //        //    Logger.Log(string.Concat("Disconnecting from ", EndPoint, "..."), LogType.Info, true);
+        //        //    await UnityWebSocket.ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client manually disconnected.", CancellationToken.None);
+
+        //        //    if (UnityWebSocket.ClientWebSocket.State == WebSocketState.Closed)
+        //        //    {
+        //        //        Logger.Log(string.Concat("Disconnected from ", EndPoint), LogType.Info);
+        //        //        OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = "Disconnected Method Called." });
+        //        //    }
+        //        //}
+
+        //        if (ClientWebSocket != null && ClientWebSocket.State != WebSocketState.Connecting && ClientWebSocket.State != WebSocketState.Closed && ClientWebSocket.State != WebSocketState.Aborted && ClientWebSocket.State != WebSocketState.CloseSent && ClientWebSocket.State != WebSocketState.CloseReceived)
+        //        {
+        //            Logger.Log(string.Concat("Disconnecting from ", EndPoint, "..."), LogType.Info, false);
+        //            _disconnecting = true;
+
+        //            try
+        //            {
+        //                await ClientWebSocket.CloseAsync(WebSocketCloseStatus.NormalClosure, "Client manually disconnected.", CancellationToken.None);
+        //            }
+        //            catch (Exception ex)
+        //            {
+
+        //            }
+
+        //            //Wait till the thread has terminated.
+        //            //_backgroundThread?.Join();
+
+        //            if (ClientWebSocket.State == WebSocketState.Closed)
+        //            {
+        //                _disconnecting = false;
+        //                Logger.Log(string.Concat("Disconnected from ", EndPoint), LogType.Info);
+
+        //                if (!_connecting && ClientWebSocket != null)
+        //                {
+        //                    ClientWebSocket.Dispose();
+        //                    ClientWebSocket = null;
+        //                }
+
+        //                OnDisconnected?.Invoke(this, new DisconnectedEventArgs { EndPoint = EndPoint, Reason = "Disconnected Method Called." });
+        //            }
+        //        }
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        HandleError(string.Concat("Error occurred in WebSocket.Disconnect disconnecting from ", EndPoint), e);
+        //    }
+        //    finally
+        //    {
+        //        if (!_connecting && ClientWebSocket != null)
+        //        {
+        //            ClientWebSocket.Dispose();
+        //            ClientWebSocket = null;
+        //        }
+        //    }
+        //}
 
 
         public async Task SendRawDataAsync(byte[] data)
         {
             try
             {
-                //await UnityWebSocket.Send(data);
-
                 string bytesDecoded = DataHelper.DecodeBinaryDataAsUTF8(data);
                 string bytesAsString = DataHelper.ConvertBinaryDataToString(data);
 
                 Logger.Log($"Sending Raw Data...", LogType.Info);
                 Logger.Log($"Bytes: {bytesDecoded} ({bytesAsString})", LogType.Debug);
 
-                //await UnityWebSocket.Send(data);
+                await UnityWebSocket.Send(data);
 
+                /*
                 // Original HoloNET code (still works):
                 if (ClientWebSocket.State != WebSocketState.Open)
                 {
@@ -347,6 +357,7 @@ namespace NextGenSoftware.WebSocket
                     //await ClientWebSocket.SendAsync(new ArraySegment<byte>(data, offset, count), WebSocketMessageType.Text, lastMessage, _cancellationToken);
                     await ClientWebSocket.SendAsync(new ArraySegment<byte>(data, offset, count), WebSocketMessageType.Binary, lastMessage, _cancellationToken);
                 }
+                */
 
                 //OnDataSent?.Invoke(this, new DataSentEventArgs { IsCallSuccessful = true, EndPoint = EndPoint,  RawBinaryData = data, RawBinaryDataAsString = bytesAsString, RawBinaryDataDecoded = bytesDecoded });
                 OnDataSent?.Invoke(this, new DataSentEventArgs { EndPoint = EndPoint, RawBinaryData = data, RawBinaryDataAsString = bytesAsString, RawBinaryDataDecoded = bytesDecoded });
@@ -358,7 +369,7 @@ namespace NextGenSoftware.WebSocket
             }
         }
 
-
+        /*
         private async Task StartListenAsync()
         //private void StartListenAsync()
         {
@@ -466,7 +477,7 @@ namespace NextGenSoftware.WebSocket
             {
                 HandleError("Error occurred in WebSocket.AttemptReconnect method.", ex);
             }
-        }
+        }*/
 
         private void HandleError(string message, Exception exception)
         {
