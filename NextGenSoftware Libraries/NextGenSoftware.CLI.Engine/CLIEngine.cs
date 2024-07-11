@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using NextGenSoftware.ErrorHandling;
+using NextGenSoftware.Utilities;
 using NextGenSoftware.Utilities.ExtentionMethods;
 
 namespace NextGenSoftware.CLI.Engine
@@ -13,6 +15,7 @@ namespace NextGenSoftware.CLI.Engine
 
         public static ConsoleColor SuccessMessageColour { get; set; } = ConsoleColor.Green;
         public static ConsoleColor ErrorMessageColour { get; set; } = ConsoleColor.Red;
+        public static ConsoleColor WarningMessageColour { get; set; } = ConsoleColor.DarkYellow;
         public static ConsoleColor MessageColour { get; set; } = ConsoleColor.Yellow;
         public static ConsoleColor WorkingMessageColour { get; set; } = ConsoleColor.Yellow;
         public static bool SupressConsoleLogging { get; set; } = false;
@@ -204,6 +207,18 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
+        public static void ShowWarningMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1)
+        {
+            try
+            {
+                ShowMessage(message, WarningMessageColour, lineSpace, noLineBreak, intendBy);
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.ShowWarningMessage method.", ex);
+            }
+        }
+
         public static string GetValidTitle(string message)
         {
             string title = GetValidInput(message).ToUpper();
@@ -242,6 +257,92 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     ShowMessage(string.Concat("", message), true, true);
                     input = Console.ReadLine();
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInput method.", ex);
+            }
+
+            return input;
+        }
+
+        public static Guid GetValidInputForGuid(string message)
+        {
+            string input = "";
+            bool valid = false;
+            Guid result = Guid.Empty;
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    {
+                        ShowMessage(string.Concat("", message), true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (Guid.TryParse(input, out result))
+                        valid = true;
+                    else
+                        ShowErrorMessage("Invalid GUID.");
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInputForGuid method.", ex);
+            }
+
+            return result;
+        }
+
+        public static object GetValidInputForEnum(string message, Type enumType)
+        {
+            string input = "";
+            object objEnumValue = null;
+
+            try
+            {
+                bool valid = false;
+               
+                while (!valid)
+                {
+                    ShowMessage(string.Concat("", message), true, true);
+                    input = Console.ReadLine();
+                    valid = Enum.TryParse(enumType, input, out objEnumValue);
+
+                    if (!valid)
+                        ShowMessage($"You need to enter one of the following: {EnumHelper.GetEnumValues(enumType, EnumHelperListType.ItemsSeperatedByComma)}");
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInputForEnum method.", ex);
+            }
+
+            return objEnumValue;
+        }
+
+        public static string GetValidPath(string message)
+        {
+            string input = "";
+            bool valid = false;
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    {
+                        ShowMessage(string.Concat("", message), true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (Directory.Exists(input))
+                        valid = true;
+                    else
+                        ShowErrorMessage("Invalid Folder.");
                 }
             }
             catch (Exception ex)
