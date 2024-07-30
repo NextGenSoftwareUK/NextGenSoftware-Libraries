@@ -86,6 +86,16 @@ namespace NextGenSoftware.CLI.Engine
             ShowMessage(message, SuccessMessageColour, lineSpace, noLineBreak, intendBy);
         }
 
+        public static void ShowDivider(string character = "*", int dividerLength = 119, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1)
+        {
+            string divider = "";
+
+            for(int i = 0; i < dividerLength; i++)
+                divider = string.Concat(divider, character);
+
+            ShowMessage(divider, MessageColour, lineSpace, noLineBreaks, intendBy);
+        }
+
         public static void ShowMessage(string message, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1)
         {
             ShowMessage(message, MessageColour, lineSpace, noLineBreaks, intendBy);
@@ -250,6 +260,7 @@ namespace NextGenSoftware.CLI.Engine
         public static string GetValidInput(string message)
         {
             string input = "";
+            message = string.Concat(message, " ");
 
             try
             {
@@ -272,6 +283,7 @@ namespace NextGenSoftware.CLI.Engine
             string input = "";
             bool valid = false;
             Guid result = Guid.Empty;
+            message = string.Concat(message, " ");
 
             try
             {
@@ -301,6 +313,7 @@ namespace NextGenSoftware.CLI.Engine
         {
             string input = "";
             object objEnumValue = null;
+            message = string.Concat(message, " ");
 
             try
             {
@@ -328,6 +341,7 @@ namespace NextGenSoftware.CLI.Engine
         {
             string input = "";
             bool valid = false;
+            message = string.Concat(message, " ");
 
             try
             {
@@ -342,7 +356,17 @@ namespace NextGenSoftware.CLI.Engine
                     if (Directory.Exists(input))
                         valid = true;
                     else
-                        ShowErrorMessage("Invalid Folder.");
+                    {
+                        if (GetConfirmation("The folder does not exist, do you wish to create it now?"))
+                        {
+                            Directory.CreateDirectory(input);
+                            valid = true;
+                        }
+                        else
+                            input = "";
+
+                        Console.WriteLine("");
+                    }
                 }
             }
             catch (Exception ex)
@@ -357,12 +381,12 @@ namespace NextGenSoftware.CLI.Engine
         {
             bool validKey = false;
             bool confirm = false;
+            message = string.Concat(message, " ");
 
             try
             {
                 while (!validKey)
                 {
-                    //ShowMessage("", false);
                     ShowMessage(message, true, true);
                     ConsoleKey key = Console.ReadKey().Key;
 
