@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading.Tasks;
 using NextGenSoftware.ErrorHandling;
 using NextGenSoftware.Utilities;
 using NextGenSoftware.Utilities.ExtentionMethods;
@@ -278,6 +279,74 @@ namespace NextGenSoftware.CLI.Engine
             return input;
         }
 
+        public static long GetValidInputForLong(string message)
+        {
+            string input = "";
+            bool valid = false;
+            long result = 0;
+            message = string.Concat(message, " ");
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    {
+                        ShowMessage(string.Concat("", message), true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (long.TryParse(input, out result))
+                        valid = true;
+                    else
+                    {
+                        ShowErrorMessage("Invalid Long Number.");
+                        input = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInputForLong method.", ex);
+            }
+
+            return result;
+        }
+
+        public static int GetValidInputForInt(string message)
+        {
+            string input = "";
+            bool valid = false;
+            int result = 0;
+            message = string.Concat(message, " ");
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    {
+                        ShowMessage(string.Concat("", message), true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (int.TryParse(input, out result))
+                        valid = true;
+                    else
+                    {
+                        ShowErrorMessage("Invalid Int (Number).");
+                        input = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInputForInt method.", ex);
+            }
+
+            return result;
+        }
+
         public static Guid GetValidInputForGuid(string message)
         {
             string input = "";
@@ -298,7 +367,10 @@ namespace NextGenSoftware.CLI.Engine
                     if (Guid.TryParse(input, out result))
                         valid = true;
                     else
+                    {
                         ShowErrorMessage("Invalid GUID.");
+                        input = "";
+                    }
                 }
             }
             catch (Exception ex)
@@ -337,7 +409,7 @@ namespace NextGenSoftware.CLI.Engine
             return objEnumValue;
         }
 
-        public static string GetValidPath(string message)
+        public static string GetValidFolder(string message, bool createIfDoesNotExist = true)
         {
             string input = "";
             bool valid = false;
@@ -357,24 +429,117 @@ namespace NextGenSoftware.CLI.Engine
                         valid = true;
                     else
                     {
-                        if (GetConfirmation("The folder does not exist, do you wish to create it now?"))
+                        if (createIfDoesNotExist)
                         {
-                            Directory.CreateDirectory(input);
-                            valid = true;
+                            if (GetConfirmation("The folder does not exist, do you wish to create it now?"))
+                            {
+                                Directory.CreateDirectory(input);
+                                valid = true;
+                            }
+                            else
+                                input = "";
+
+                            Console.WriteLine("");
                         }
                         else
+                        {
+                            ShowErrorMessage("The folder does not exist!");
                             input = "";
-
-                        Console.WriteLine("");
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                HandleError("Error occured in CLIEngine.GetValidInput method.", ex);
+                HandleError("Error occured in CLIEngine.GetValidFolder method.", ex);
             }
 
             return input;
+        }
+
+        public static string GetValidFile(string message)
+        {
+            string input = "";
+            bool valid = false;
+            message = string.Concat(message, " ");
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    {
+                        ShowMessage(string.Concat("", message), true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (File.Exists(input))
+                        valid = true;
+                    else
+                    {
+                        ShowErrorMessage("The file does not exist!");
+                        input = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidFile method.", ex);
+            }
+
+            return input;
+        }
+
+        public static async Task<Uri> GetValidURIAsync(string message, bool checkFileExists = true)
+        {
+            string input = "";
+            bool valid = false;
+            Uri uri = null;
+            message = string.Concat(message, " ");
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    {
+                        ShowMessage(string.Concat("", message), true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (Uri.TryCreate(input, UriKind.Absolute, out uri))
+                    {
+                        if (checkFileExists)
+                        {
+                            ShowWorkingMessage("Checking if the URI exists...");
+
+                            if (await URIHelper.ValidateUrlWithHttpClientAsync(uri.AbsoluteUri))
+                            {
+                                ShowSuccessMessage("The URI is valid!");
+                                valid = true;
+                            }
+                            else
+                            {
+                                ShowErrorMessage("The URI is valid but the resource/file does not exist!");
+                                input = "";
+                            }
+                        }
+                        else
+                            valid = true;
+                    }
+                    else
+                    {
+                        ShowErrorMessage("The URI is invalid!");
+                        input = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidURI method.", ex);
+            }
+
+            return uri;
         }
 
         public static bool GetConfirmation(string message)
