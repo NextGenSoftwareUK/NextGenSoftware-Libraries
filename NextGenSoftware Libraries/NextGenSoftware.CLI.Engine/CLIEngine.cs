@@ -313,6 +313,40 @@ namespace NextGenSoftware.CLI.Engine
             return result;
         }
 
+        public static decimal GetValidInputForDecimal(string message)
+        {
+            string input = "";
+            bool valid = false;
+            decimal result = 0;
+            message = string.Concat(message, " ");
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    {
+                        ShowMessage(string.Concat("", message), true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (decimal.TryParse(input, out result))
+                        valid = true;
+                    else
+                    {
+                        ShowErrorMessage("Invalid Decimal.");
+                        input = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInputForDecimal method.", ex);
+            }
+
+            return result;
+        }
+
         public static int GetValidInputForInt(string message)
         {
             string input = "";
@@ -772,7 +806,7 @@ namespace NextGenSoftware.CLI.Engine
             message = string.Concat(message, exception != null ? $". Error Details: {exception}" : "");
             //Logging.Logging.Log(message, LogType.Error);
 
-            OnError.Invoke(null, new CLIEngineErrorEventArgs { Reason = message, ErrorDetails = exception });
+            OnError?.Invoke(null, new CLIEngineErrorEventArgs { Reason = message, ErrorDetails = exception });
 
             switch (ErrorHandlingBehaviour)
             {
