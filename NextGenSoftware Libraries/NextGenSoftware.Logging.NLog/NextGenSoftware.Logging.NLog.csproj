@@ -51,10 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\NextGenSoftware.Logging\NextGenSoftware.Logging.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Update="README.md">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>

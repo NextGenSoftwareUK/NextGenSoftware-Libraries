@@ -2,7 +2,7 @@
 
   <PropertyGroup>
 	  <TargetFramework>net8.0</TargetFramework>
-	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
 	  <PackageId>NextGenSoftware.ErrorHandling</PackageId>
 	  <Company>NextGen Software Ltd</Company>
 	  <Product>NextGen Software Error Handling</Product>
