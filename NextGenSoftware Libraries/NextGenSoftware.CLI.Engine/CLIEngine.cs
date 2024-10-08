@@ -443,7 +443,7 @@ namespace NextGenSoftware.CLI.Engine
             return objEnumValue;
         }
 
-        public static string GetValidFolder(string message, bool createIfDoesNotExist = true)
+        public static string GetValidFolder(string message, bool createIfDoesNotExist = true, string baseAddress = "")
         {
             string input = "";
             bool valid = false;
@@ -459,7 +459,9 @@ namespace NextGenSoftware.CLI.Engine
                         input = Console.ReadLine();
                     }
 
-                    if (Directory.Exists(input))
+                    string path = Path.Combine(baseAddress, input);
+
+                    if (Directory.Exists(Path.Combine(baseAddress, input)))
                         valid = true;
                     else
                     {
@@ -491,7 +493,7 @@ namespace NextGenSoftware.CLI.Engine
             return input;
         }
 
-        public static string GetValidFile(string message)
+        public static string GetValidFile(string message, string baseAddress = "")
         {
             string input = "";
             bool valid = false;
@@ -507,7 +509,9 @@ namespace NextGenSoftware.CLI.Engine
                         input = Console.ReadLine();
                     }
 
-                    if (File.Exists(input))
+                    string path = Path.Combine(baseAddress, input);
+
+                    if (File.Exists(Path.Combine(baseAddress, input)))
                         valid = true;
                     else
                     {
