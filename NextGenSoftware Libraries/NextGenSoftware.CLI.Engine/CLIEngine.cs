@@ -493,14 +493,16 @@ namespace NextGenSoftware.CLI.Engine
             return input;
         }
 
+        //public static string GetValidFile(string message, string baseAddress = "", string defaultPath = "")
         public static string GetValidFile(string message, string baseAddress = "")
         {
             string input = "";
             bool valid = false;
-            message = string.Concat(message, " ");
 
             try
             {
+                message = string.Concat(message, " ");
+
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
@@ -508,8 +510,6 @@ namespace NextGenSoftware.CLI.Engine
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
                     }
-
-                    string path = Path.Combine(baseAddress, input);
 
                     if (File.Exists(Path.Combine(baseAddress, input)))
                         valid = true;
