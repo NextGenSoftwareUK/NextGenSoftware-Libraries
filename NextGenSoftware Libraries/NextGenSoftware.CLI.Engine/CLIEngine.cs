@@ -347,6 +347,40 @@ namespace NextGenSoftware.CLI.Engine
             return result;
         }
 
+        public static double GetValidInputForDouble(string message)
+        {
+            string input = "";
+            bool valid = false;
+            double result = 0;
+            message = string.Concat(message, " ");
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    {
+                        ShowMessage(string.Concat("", message), true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (double.TryParse(input, out result))
+                        valid = true;
+                    else
+                    {
+                        ShowErrorMessage("Invalid Double.");
+                        input = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInputForDouble method.", ex);
+            }
+
+            return result;
+        }
+
         public static int GetValidInputForInt(string message)
         {
             string input = "";
@@ -526,6 +560,16 @@ namespace NextGenSoftware.CLI.Engine
             }
 
             return input;
+        }
+
+        public static byte[] GetValidFileAndUpload(string message, string baseAddress = "")
+        {
+            string path = GetValidFile(message, baseAddress);
+
+            if (!string.IsNullOrEmpty(path))
+                return File.ReadAllBytes(path);
+
+            return null;
         }
 
         public static async Task<Uri> GetValidURIAsync(string message, bool checkFileExists = true)
