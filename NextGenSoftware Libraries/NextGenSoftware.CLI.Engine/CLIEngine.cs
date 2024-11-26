@@ -243,7 +243,7 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     if (!validTitles.Contains(title))
                     {
-                        ShowErrorMessage("Title invalid. Please try again.");
+                        ShowErrorMessage("Title invalid. Please try again. Valid values are: Mr, Mrs, Ms, Miss or Dr.");
                         title = GetValidInput(message).ToUpper();
                     }
                     else
@@ -265,7 +265,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
-                while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                 {
                     ShowMessage(string.Concat("", message), true, true);
                     input = Console.ReadLine();
@@ -290,10 +290,16 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (!valid)
                 {
-                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
+                    }
+
+                    if (input == "exit")
+                    {
+                        result = -1;
+                        break;
                     }
 
                     if (long.TryParse(input, out result))
@@ -324,10 +330,16 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (!valid)
                 {
-                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
+                    }
+
+                    if (input == "exit")
+                    {
+                        result = -1;
+                        break;
                     }
 
                     if (decimal.TryParse(input, out result))
@@ -358,10 +370,16 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (!valid)
                 {
-                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
+                    }
+
+                    if (input == "exit")
+                    {
+                        result = -1;
+                        break;
                     }
 
                     if (double.TryParse(input, out result))
@@ -392,11 +410,14 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (!valid)
                 {
-                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
                     }
+
+                    if (input == "exit")
+                        break;
 
                     if (int.TryParse(input, out result))
                         valid = true;
@@ -426,11 +447,14 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (!valid)
                 {
-                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
                     }
+
+                    if (input == "exit")
+                        break;
 
                     if (Guid.TryParse(input, out result))
                         valid = true;
@@ -463,6 +487,13 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     ShowMessage(string.Concat("", message), true, true);
                     input = Console.ReadLine();
+
+                    if (input == "exit")
+                    {
+                        objEnumValue = "exit";
+                        break;
+                    }
+
                     valid = Enum.TryParse(enumType, input, out objEnumValue);
 
                     if (!valid)
@@ -487,11 +518,14 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (!valid)
                 {
-                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
                     }
+
+                    if (input == "exit")
+                        break;
 
                     string path = Path.Combine(baseAddress, input);
 
@@ -539,11 +573,14 @@ namespace NextGenSoftware.CLI.Engine
 
                 while (!valid)
                 {
-                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
                     }
+
+                    if (input == "exit")
+                        break;
 
                     if (File.Exists(Path.Combine(baseAddress, input)))
                         valid = true;
@@ -583,11 +620,14 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (!valid)
                 {
-                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input))
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
                     }
+
+                    if (input == "exit")
+                        break;
 
                     if (Uri.TryCreate(input, UriKind.Absolute, out uri))
                     {
