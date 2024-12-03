@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using NextGenSoftware.ErrorHandling;
 using NextGenSoftware.Utilities;
@@ -10,6 +11,15 @@ namespace NextGenSoftware.CLI.Engine
 {
     public static class CLIEngine
     {
+        const char _block = '■';
+        const string _back = "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
+        const string _twirl = "-\\|/";
+
+        private static ProgressBar _progressBar = null;
+        //private static ShellProgressBar.ProgressBar _progressBar = null;
+        private static int _lastPercentage = 0;
+        private static int _workingMessageLength = 0;
+        private static bool _updatingProgressBar = false;
         private static bool _nextMessageOnSameLine = false;
         public static Spinner Spinner = new Spinner();
         // public static Colorful.Console ColorfulConsole;
@@ -188,12 +198,45 @@ namespace NextGenSoftware.CLI.Engine
 
         public static void BeginWorkingMessage(string message, ConsoleColor consoleColour)
         {
+            _workingMessageLength = message.Length;
             ShowWorkingMessage(message, consoleColour, false, 1, true);
         }
 
         public static void BeginWorkingMessage(string message)
         {
+            _workingMessageLength = message.Length;
             ShowWorkingMessage(message, WorkingMessageColour, false, 1, true);
+        }
+
+        public static void UpdateWorkingMessage(string message, ConsoleColor consoleColour)
+        {
+            string back = "";
+            for (int i = 0; i < _workingMessageLength; i++)
+                back = string.Concat(back, "\b");
+
+            _workingMessageLength = message.Length;
+            ShowWorkingMessage(string.Concat(back, message), consoleColour, false, 1, true);
+        }
+
+        public static void UpdateWorkingMessageWithPercent(int percent, ConsoleColor consoleColour)
+        {
+            //Console.Write($"\b\b\b\b\b {percent}%");
+            Console.Write($"\b\b\b\b\b\b {percent}%");
+
+            //if (percent >= 10 && _lastPercentage < 10)
+            //    Spinner.Left++;
+
+            _lastPercentage = percent;
+        }
+
+        public static void UpdateWorkingMessageWithPercent(int percent)
+        {
+            UpdateWorkingMessageWithPercent(percent, WorkingMessageColour);
+        }
+
+        public static void UpdateWorkingMessage(string message)
+        {
+            UpdateWorkingMessage(message, WorkingMessageColour);
         }
 
         public static void EndWorkingMessage(string message, ConsoleColor consoleColour)
@@ -866,6 +909,52 @@ namespace NextGenSoftware.CLI.Engine
                 HandleError("Error occured in CLIEngine.GetValidColour method.", ex);
             }
         }
+
+        public static void ShowProgressBar(int percent)
+        {
+            if (_progressBar == null)
+                _progressBar = new ProgressBar();
+
+            _progressBar.Report(percent);
+        }
+
+        public static void DisposeProgressBar()
+        {
+            _progressBar.Dispose();
+            _progressBar = null;
+        }
+
+        //public static void ShowProgressBar(string message, int maxTicks, ConsoleColor colour = ConsoleColor.Yellow)
+        //{
+        //    if (_progressBar == null)
+        //        _progressBar = new ShellProgressBar.ProgressBar(maxTicks, message, colour);
+
+        //    _progressBar.Tick()
+        //}
+
+
+
+        //public static void ShowProgressBar(int percent, bool update = false)
+        //{
+        //    if (_updatingProgressBar)
+        //        return;
+
+        //    _updatingProgressBar = true;
+
+        //    if (update)
+        //        Console.Write(_back);
+        //    Console.Write("[");
+        //    var p = (int)((percent / 10f) + .5f);
+        //    for (var i = 0; i < 10; ++i)
+        //    {
+        //        if (i >= p)
+        //            Console.Write(' ');
+        //        else
+        //            Console.Write(_block);
+        //    }
+        //    Console.Write("] {0,3:##0}%", percent);
+        //    _updatingProgressBar = false;
+        //}
 
         //private static string WriteMessage(string message, bool lineSpace = true, int intendBy = 1)
         //{
