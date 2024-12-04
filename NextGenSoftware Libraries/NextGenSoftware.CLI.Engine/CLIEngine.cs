@@ -210,21 +210,27 @@ namespace NextGenSoftware.CLI.Engine
 
         public static void UpdateWorkingMessage(string message, ConsoleColor consoleColour)
         {
-            string back = "";
-            for (int i = 0; i < _workingMessageLength; i++)
-                back = string.Concat(back, "\b");
+            Spinner.Stop();
+            Console.SetCursorPosition(0, Console.CursorTop);
+            Console.Write(string.Concat(" ", message, " "), consoleColour);
+            Spinner.Start();
 
-            _workingMessageLength = message.Length;
-            ShowWorkingMessage(string.Concat(back, message), consoleColour, false, 1, true);
+            //string back = "";
+            //for (int i = 0; i < _workingMessageLength; i++)
+            //    back = string.Concat(back, "\b");
+
+            //_workingMessageLength = message.Length;
+            //ShowWorkingMessage(string.Concat(back, message), consoleColour, false, 1, true);
         }
 
         public static void UpdateWorkingMessageWithPercent(int percent, ConsoleColor consoleColour)
         {
-            //Console.Write($"\b\b\b\b\b {percent}%");
-            Console.Write($"\b\b\b\b\b\b {percent}%");
+            //Console.Write($"\b\b\b {percent}%");
+            Console.Write($"\b\b\b\b\b {percent}%");
+            //Console.Write($"\b\b\b\b\b\b {percent}%");
 
-            //if (percent >= 10 && _lastPercentage < 10)
-            //    Spinner.Left++;
+            if (percent >= 10 && _lastPercentage < 10)
+                Spinner.Left++;
 
             _lastPercentage = percent;
         }
@@ -910,7 +916,7 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
-        public static void ShowProgressBar(int percent)
+        public static void ShowProgressBar(double percent)
         {
             if (_progressBar == null)
                 _progressBar = new ProgressBar();
@@ -953,6 +959,8 @@ namespace NextGenSoftware.CLI.Engine
         //            Console.Write(_block);
         //    }
         //    Console.Write("] {0,3:##0}%", percent);
+        //    //Spinner.Start();
+
         //    _updatingProgressBar = false;
         //}
 
