@@ -279,6 +279,21 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
+        public static void BeginTable()
+        {
+
+        }
+
+        public static void WriteTableRow(string[] columns)
+        {
+
+        }
+
+        public static void EndTable()
+        {
+
+        }
+
         public static string GetValidTitle(string message)
         {
             string title = GetValidInput(message).ToUpper();
