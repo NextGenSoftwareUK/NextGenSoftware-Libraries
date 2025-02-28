@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using BetterConsoleTables;
 using NextGenSoftware.ErrorHandling;
 using NextGenSoftware.Utilities;
 using NextGenSoftware.Utilities.ExtentionMethods;
@@ -15,6 +16,9 @@ namespace NextGenSoftware.CLI.Engine
         const string _back = "\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b\b";
         const string _twirl = "-\\|/";
 
+        private static string[] _columnHeaders;
+        private static string[][] _rows;
+        private static int _currentRow = 0;
         private static ProgressBar _progressBar = null;
         //private static ShellProgressBar.ProgressBar _progressBar = null;
         private static int _lastPercentage = 0;
@@ -279,19 +283,26 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
-        public static void BeginTable()
+        public static void BeginTable(string[] columnHeaders)
         {
-
+            _columnHeaders = columnHeaders;
         }
 
         public static void WriteTableRow(string[] columns)
         {
-
+            _rows[_currentRow] = columns;
+            _currentRow++;
         }
 
         public static void EndTable()
         {
+            int width = Console.WindowWidth;
 
+            for (int i = 0; i < _currentRow; i++)
+            {
+                for (int iCol = 0; iCol < _columnHeaders.Length; iCol++)
+                    Console.Write(_rows[i][iCol]);
+            }
         }
 
         public static string GetValidTitle(string message)
