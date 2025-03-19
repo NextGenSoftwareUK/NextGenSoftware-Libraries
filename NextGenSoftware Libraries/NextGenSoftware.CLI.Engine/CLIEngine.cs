@@ -950,9 +950,13 @@ namespace NextGenSoftware.CLI.Engine
             _progressBar.Report(percent);
         }
 
-        public static void DisposeProgressBar()
+        public static void DisposeProgressBar(bool clearText = true)
         {
-            _progressBar.Dispose();
+            if (clearText)
+                _progressBar.Dispose();
+            else
+                _progressBar.DisposeButKeepText();
+
             _progressBar = null;
         }
 

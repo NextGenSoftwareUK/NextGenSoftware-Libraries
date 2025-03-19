@@ -44,6 +44,9 @@ namespace NextGenSoftware.CLI.Engine
             // Make sure value is in [0..1] range
             value = Math.Max(0, Math.Min(1, value));
             Interlocked.Exchange(ref currentProgress, value);
+
+            //if (value == 100)
+             //   Dispose();
         }
 
         private void TimerHandler(object state)
@@ -104,8 +107,23 @@ namespace NextGenSoftware.CLI.Engine
             {
                 disposed = true;
                 UpdateText(string.Empty);
+                timer.Dispose();
             }
         }
 
+        public void DisposeButKeepText()
+        {
+            lock (timer)
+            {
+                //Report(100);
+                //TimerHandler(null);
+
+                if (currentProgress == 1)
+                    UpdateText("[■■■■■■■■■■] 100%");
+
+                disposed = true;
+                timer.Dispose();
+            }
+        }
     }
 }
