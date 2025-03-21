@@ -612,8 +612,8 @@ namespace NextGenSoftware.CLI.Engine
                         {
                             if (GetConfirmation("The folder does not exist, do you wish to create it now?"))
                             {
-                                Directory.CreateDirectory(input);
-                                valid = true;
+                                Directory.CreateDirectory(Path.Combine(baseAddress, input));
+                                valid = Directory.Exists(Path.Combine(baseAddress, input));
                             }
                             else
                                 input = "";
