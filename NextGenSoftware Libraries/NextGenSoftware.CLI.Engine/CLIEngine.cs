@@ -618,7 +618,7 @@ namespace NextGenSoftware.CLI.Engine
                             else
                                 input = "";
 
-                            Console.WriteLine("");
+                            //Console.WriteLine("");
                         }
                         else
                         {
@@ -952,12 +952,15 @@ namespace NextGenSoftware.CLI.Engine
 
         public static void DisposeProgressBar(bool clearText = true)
         {
-            if (clearText)
-                _progressBar.Dispose();
-            else
-                _progressBar.DisposeButKeepText();
+            if (_progressBar != null)
+            {
+                if (clearText)
+                    _progressBar.Dispose();
+                else
+                    _progressBar.DisposeButKeepText();
 
-            _progressBar = null;
+                _progressBar = null;
+            }
         }
 
         //public static void ShowProgressBar(string message, int maxTicks, ConsoleColor colour = ConsoleColor.Yellow)
