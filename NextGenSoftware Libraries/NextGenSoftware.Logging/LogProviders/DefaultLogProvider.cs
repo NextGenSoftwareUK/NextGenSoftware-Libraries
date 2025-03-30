@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using NextGenSoftware.CLI.Engine;
 using NextGenSoftware.ErrorHandling;
-using NextGenSoftware.Logging.Interfaces;
 using NextGenSoftware.WebSocket;
 
 namespace NextGenSoftware.Logging
@@ -47,34 +46,34 @@ namespace NextGenSoftware.Logging
         public static ConsoleColor WarningColour { get; set; } = ConsoleColor.Yellow;
         public static ConsoleColor ErrorColour { get; set; } = ConsoleColor.Red;
 
-        public void Log(string message, LogType type, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
+        public void Log(string message, LogType type, bool logToFile = true, bool logToConsole = true, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
         {
             if (ShowColouredLogs)
             {
                 switch (type)
                 {
                     case LogType.Debug:
-                        Log(message, type, DebugColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
+                        Log(message, type, logToFile, logToConsole, DebugColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
                         break;
 
                     case LogType.Info:
-                        Log(message, type, InfoColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
+                        Log(message, type, logToFile, logToConsole, InfoColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
                         break;
 
                     case LogType.Warning:
-                        Log(message, type, WarningColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
+                        Log(message, type, logToFile, logToConsole, WarningColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
                         break;
 
                     case LogType.Error:
-                        Log(message, type, ErrorColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
+                        Log(message, type, logToFile, logToConsole, ErrorColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
                         break;
                 }
             }
             else
-                Log(message, type, ConsoleColor.White, showWorkingAnimation);
+                Log(message, type, logToFile, logToConsole, ConsoleColor.White, showWorkingAnimation);
         }
 
-        public void Log(string message, LogType type, ConsoleColor consoleColour, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
+        public void Log(string message, LogType type, bool logToFile = true, bool logToConsole = true, ConsoleColor consoleColour = ConsoleColor.White,bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
         {
             try
             {
