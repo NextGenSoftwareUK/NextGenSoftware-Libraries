@@ -815,7 +815,7 @@ namespace NextGenSoftware.CLI.Engine
             return email;
         }*/
 
-        public static string GetValidPassword(ConsoleColor colour = MessageColour)
+        public static string GetValidPassword(string message = "What is the password you wish to use?", string confirmMessage = "Please confirm password: ", ConsoleColor colour = MessageColour)
         {
             string password = "";
             string password2 = "";
@@ -826,8 +826,8 @@ namespace NextGenSoftware.CLI.Engine
 
                 while ((string.IsNullOrEmpty(password) && string.IsNullOrEmpty(password2)) || password != password2)
                 {
-                    password = ReadPassword("What is the password you wish to use? ", colour);
-                    password2 = ReadPassword("Please confirm password: ", colour);
+                    password = ReadPassword(message, colour);
+                    password2 = ReadPassword(confirmMessage, colour);
 
                     if (password != password2)
                         ShowErrorMessage("The passwords do not match. Please try again.");
