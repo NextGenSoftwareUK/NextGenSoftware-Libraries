@@ -815,7 +815,7 @@ namespace NextGenSoftware.CLI.Engine
             return email;
         }*/
 
-        public static string GetValidPassword(string message = "What is the password you wish to use?", string confirmMessage = "Please confirm password: ", ConsoleColor colour = MessageColour)
+        public static string GetValidPassword(string message = "What is the password you wish to use? ", string confirmMessage = "Please confirm password: ", ConsoleColor colour = MessageColour)
         {
             string password = "";
             string password2 = "";
