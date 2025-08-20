@@ -57,7 +57,7 @@ namespace NextGenSoftware.CLI.Engine
 
                 int progressBlockCount = (int)(currentProgress * blockCount);
                 int percent = (int)(currentProgress * 100);
-                string text = string.Format("[{0}{1}] {2,3}% {3}",
+                string text = string.Format(" [{0}{1}] {2,3}% {3}",
                     new string('■', progressBlockCount), new string('-', blockCount - progressBlockCount),
                     percent,
                     animation[animationIndex++ % animation.Length]);
@@ -119,7 +119,7 @@ namespace NextGenSoftware.CLI.Engine
                 //TimerHandler(null);
 
                 if (currentProgress == 1)
-                    UpdateText("[■■■■■■■■■■] 100%");
+                    UpdateText(" [■■■■■■■■■■] 100%");
 
                 disposed = true;
                 timer.Dispose();
