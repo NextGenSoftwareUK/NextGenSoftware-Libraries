@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,6 +28,10 @@ namespace NextGenSoftware.Utilities
                 when (e.StatusCode.HasValue && (int)e.StatusCode.Value > 500)
             {
                 return true;
+            }
+            catch (Exception e)
+            {
+                return false;
             }
         }
     }
