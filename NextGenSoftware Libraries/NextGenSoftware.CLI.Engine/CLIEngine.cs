@@ -474,7 +474,7 @@ namespace NextGenSoftware.CLI.Engine
             return result;
         }
 
-        public static int GetValidInputForInt(string message, ConsoleColor colour = MessageColour)
+        public static int GetValidInputForInt(string message, bool checkForLowestOrHighestRange = false, int lowest = 0, int highest = 0, ConsoleColor colour = MessageColour)
         {
             string input = "";
             bool valid = false;
@@ -495,7 +495,21 @@ namespace NextGenSoftware.CLI.Engine
                         break;
 
                     if (int.TryParse(input, out result))
-                        valid = true;
+                    {
+                        if (checkForLowestOrHighestRange && result < lowest)
+                        {
+                            ShowErrorMessage($"Number must be above {lowest}.");
+                            input = "";
+                        }
+
+                        else if (checkForLowestOrHighestRange && result > highest)
+                        {
+                            ShowErrorMessage($"Number must be below {highest}.");
+                            input = "";
+                        }
+                        else
+                            valid = true;
+                    }
                     else
                     {
                         ShowErrorMessage("Invalid Int (Number).");
@@ -779,8 +793,7 @@ namespace NextGenSoftware.CLI.Engine
             return confirm;
         }
 
-        /*
-        public static string GetValidEmail(string message, bool checkIfEmailAlreadyInUse)
+        public static string GetValidInputForEmail(string message)
         {
             bool emailValid = false;
             string email = "";
@@ -792,28 +805,12 @@ namespace NextGenSoftware.CLI.Engine
 
                 if (!ValidationHelper.IsValidEmail(email))
                     ShowErrorMessage("That email is not valid. Please try again.");
-
-                else if (checkIfEmailAlreadyInUse)
-                {
-                    ShowWorkingMessage("Checking if email already in use...");
-
-                    OASISResult<bool> checkIfEmailAlreadyInUseResult = STAR.OASISAPI.Avatar.CheckIfEmailIsAlreadyInUse(email);
-
-                    if (checkIfEmailAlreadyInUseResult.Result)
-                        ShowErrorMessage(checkIfEmailAlreadyInUseResult.Message);
-                    else
-                    {
-                        emailValid = true;
-                        Spinner.Stop();
-                        ShowMessage("", false);
-                    }
-                }
                 else
                     emailValid = true;
             }
 
             return email;
-        }*/
+        }
 
         public static string GetValidPassword(string message = "What is the password you wish to use? ", string confirmMessage = "Please confirm password: ", ConsoleColor colour = MessageColour)
         {
