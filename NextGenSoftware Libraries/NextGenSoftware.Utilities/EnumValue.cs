@@ -12,6 +12,12 @@ namespace NextGenSoftware.Utilities
             Value = value;
         }
 
+        //public EnumValue(T value, double score)
+        //{
+        //    Value = value;
+        //    Score = score;
+        //}
+
         
         public T Value
         {
@@ -33,5 +39,7 @@ namespace NextGenSoftware.Utilities
                 return _name;
             }
         }
+
+        public double Score { get; set; } = 0.0;
     }
 }
