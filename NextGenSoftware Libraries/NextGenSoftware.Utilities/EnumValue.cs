@@ -40,6 +40,6 @@ namespace NextGenSoftware.Utilities
             }
         }
 
-        public double Score { get; set; } = 0.0;
+       // public double Score { get; set; } = 0.0;
     }
 }
