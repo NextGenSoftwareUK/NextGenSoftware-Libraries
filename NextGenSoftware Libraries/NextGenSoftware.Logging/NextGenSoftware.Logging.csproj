@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
 		<PackageId>NextGenSoftware.Logging</PackageId>
 		<Company>NextGen Software Ltd</Company>
@@ -14,20 +14,7 @@
 		<Authors>David Ellams (NextGen Software Ltd)</Authors>
 		<PackageTags>logging;net;unity</PackageTags>
 		<PackageReleaseNotes>
-			- Upgraded to .NET 8.
-			- Re-built with many improvements &amp; new features.
-			- Loggers are now called LogProviders.
-			- Added AddLogProvider method overloads.
-			- Added new ILogger interface.
-			- Added FileLoggingMode &amp; ConsoleLoggingMode to LogConfig.
-			- Integrated the new NextGenSoftware.ErrorHandling lib.
-			- Added LogProviderBase which all LogProviders must extend.
-			- Added NumberOfRetriesToLogToFile &amp; RetryLoggingToFileEverySeconds to DefaultLogger.
-			- Added MaxLogFileSize to DefaultLogger so you can set the maximum file size a log can be before it will start logging to a new file.
-			- Added IndentLogMessagesBy to DefaultLogger.
-			- Renamed AddAdditionalSpaceAfterEachLogEntry to InsertExtraNewLineAfterLogMessage.
-			- Added IDefaultLogProvider interface.
-			- Multiple bug fixes.
+			- Multi-target net5.0, net8.0 and net9.0 for compatibility.
 		</PackageReleaseNotes>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>

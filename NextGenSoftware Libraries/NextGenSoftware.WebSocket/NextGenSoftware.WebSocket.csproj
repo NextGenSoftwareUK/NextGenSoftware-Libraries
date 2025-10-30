@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 	  <PackageId>NextGenSoftware.WebSocket</PackageId>
 	  <Company>NextGen Software Ltd</Company>
@@ -14,20 +14,9 @@
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>websocket;net;unity</PackageTags>
 	  <PackageReleaseNotes>
-		  - Upgraded to .NET 8.
-		  - Fixed multiple bugs including a re-connect issue, disconnect bugs &amp; more.
-		  - Improved error handling/reporting.
-		  - Add OnDataSent event.
-		  - EndPoint property is now a URI instead of string.
-		  - Connect method renamed to ConnectAsync.
-		  - Disconnect method renamed to DisconnectAsync.
-		  - EndPoint is now passed into the ConenctAsync method rather than the constructor.
-		  - As part of the upgrades to the logging system used in the NextGenSoftware.Logging lib a new Logger property has also been added.
-		  - Integrated the new NextGenSoftware.ErrorHandling lib.
-		  - IWebSocket interface added.
-		  - IsWarning property added to CallBackBaseEventArgs.
-		  - Other misc changes.
-	  </PackageReleaseNotes>
+		  - Multi-target net5.0, net8.0 and net9.0 to maintain compatibility across workspace.
+		  - Upgraded to support newer .NET while remaining compatible with older consumers.
+		</PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
 	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
 	  <Copyright>Copyright © NextGen Software Ltd 2022 - 2024</Copyright>
@@ -51,8 +40,15 @@
 	  <ProjectReference Include="..\NextGenSoftware.Logging\NextGenSoftware.Logging.csproj" />
 	</ItemGroup>
 
-	<ItemGroup>
+	<!--<ItemGroup>
 	  <None Update="README.md">
+	    <Pack>True</Pack>
+	    <PackagePath>\</PackagePath>
+	  </None>
+	</ItemGroup>-->
+
+	<ItemGroup>
+	  <None Include="README.md">
 	    <Pack>True</Pack>
 	    <PackagePath>\</PackagePath>
 	  </None>
