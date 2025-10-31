@@ -96,27 +96,27 @@ namespace NextGenSoftware.CLI.Engine
             Console.Write(colour);
         }
 
-        public static void ShowSuccessMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1)
+        public static void ShowSuccessMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1, bool addLineBefore = false)
         {
             ShowMessage(message, SuccessMessageColour, lineSpace, noLineBreak, intendBy);
         }
 
-        public static void ShowDivider(string character = "*", int dividerLength = 119, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1)
+        public static void ShowDivider(string character = "*", int dividerLength = 119, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1, bool addLineBefore = false)
         {
             string divider = "";
 
             for(int i = 0; i < dividerLength; i++)
                 divider = string.Concat(divider, character);
 
-            ShowMessage(divider, MessageColour, lineSpace, noLineBreaks, intendBy);
+            ShowMessage(divider, MessageColour, lineSpace, noLineBreaks, intendBy, addLineBefore);
         }
 
-        public static void ShowMessage(string message, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1)
+        public static void ShowMessage(string message, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1, bool addLineBefore = false)
         {
             ShowMessage(message, MessageColour, lineSpace, noLineBreaks, intendBy);
         }
 
-        public static void ShowMessage(string message, ConsoleColor colour, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1)
+        public static void ShowMessage(string message, ConsoleColor colour, bool lineSpace = true, bool noLineBreaks = false, int intendBy = 1, bool addLineBefore = false)
         {
             try
             {
@@ -142,6 +142,9 @@ namespace NextGenSoftware.CLI.Engine
                 if (lineSpace)
                     Console.WriteLine(" ");
 
+                if (addLineBefore)
+                    Console.WriteLine("");
+
                 string indent = "";
                 for (int i = 0; i < intendBy; i++)
                     indent = string.Concat(indent, " ");
@@ -166,14 +169,14 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
-        public static void ShowWorkingMessage(string message, bool lineSpace = true, int intendBy = 1, bool nextMessageOnSameLine = false)
+        public static void ShowWorkingMessage(string message, bool lineSpace = true, int intendBy = 1, bool nextMessageOnSameLine = false, bool addLineBefore = false)
         {
             try
             {
                 if (SupressConsoleLogging)
                     return;
 
-                ShowMessage(message, WorkingMessageColour, lineSpace, true, intendBy);
+                ShowMessage(message, WorkingMessageColour, lineSpace, true, intendBy, addLineBefore);
                 Spinner.Start();
                 _nextMessageOnSameLine = nextMessageOnSameLine;
             }
@@ -183,14 +186,14 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
-        public static void ShowWorkingMessage(string message, ConsoleColor color, bool lineSpace = true, int intendBy = 1, bool nextMessageOnSameLine = false)
+        public static void ShowWorkingMessage(string message, ConsoleColor color, bool lineSpace = true, int intendBy = 1, bool nextMessageOnSameLine = false, bool addLineBefore = false)
         {
             try
             {
                 if (SupressConsoleLogging)
                     return;
 
-                ShowMessage(message, color, lineSpace, true, intendBy);
+                ShowMessage(message, color, lineSpace, true, intendBy, addLineBefore);
                 Spinner.Start();
                 _nextMessageOnSameLine = nextMessageOnSameLine;
             }
@@ -206,10 +209,10 @@ namespace NextGenSoftware.CLI.Engine
             ShowWorkingMessage(message, consoleColour, false, 1, true);
         }
 
-        public static void BeginWorkingMessage(string message)
+        public static void BeginWorkingMessage(string message, bool addLineBefore = false)
         {
             _workingMessageLength = message.Length;
-            ShowWorkingMessage(message, WorkingMessageColour, false, 1, true);
+            ShowWorkingMessage(message, WorkingMessageColour, false, 1, true, addLineBefore: addLineBefore);
         }
 
         public static void UpdateWorkingMessage(string message, ConsoleColor consoleColour)
@@ -259,11 +262,11 @@ namespace NextGenSoftware.CLI.Engine
             ShowMessage(message, WorkingMessageColour, false, false, 0);
         }
 
-        public static void ShowErrorMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1)
+        public static void ShowErrorMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1, bool addLineBefore = false)
         {
             try
             {
-                ShowMessage(message, ErrorMessageColour, lineSpace, noLineBreak, intendBy);
+                ShowMessage(message, ErrorMessageColour, lineSpace, noLineBreak, intendBy, addLineBefore);
             }
             catch (Exception ex)
             {
@@ -271,11 +274,11 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
-        public static void ShowWarningMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1)
+        public static void ShowWarningMessage(string message, bool lineSpace = true, bool noLineBreak = false, int intendBy = 1, bool addLineBefore = false)
         {
             try
             {
-                ShowMessage(message, WarningMessageColour, lineSpace, noLineBreak, intendBy);
+                ShowMessage(message, WarningMessageColour, lineSpace, noLineBreak, intendBy, addLineBefore);
             }
             catch (Exception ex)
             {
@@ -305,7 +308,7 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
-        public static string GetValidTitle(string message, ConsoleColor colour = MessageColour)
+        public static string GetValidTitle(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string title = GetValidInput(message, colour).ToUpper();
             //string[] validTitles = new string[5] { "Mr", "Mrs", "Ms", "Miss", "Dr" };
@@ -318,7 +321,10 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     if (!validTitles.Contains(title))
                     {
-                        ShowErrorMessage("Title invalid. Please try again. Valid values are: Mr, Mrs, Ms, Miss or Dr.");
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
+                        ShowErrorMessage("Title invalid. Please try again. Valid values are: Mr, Mrs, Ms, Miss or Dr.", addLineBefore: addLineBefore);
                         title = GetValidInput(message).ToUpper();
                     }
                     else
@@ -333,7 +339,7 @@ namespace NextGenSoftware.CLI.Engine
             return ExtensionMethods.ToPascalCase(title);
         }
 
-        public static string GetValidInput(string message, ConsoleColor colour = MessageColour)
+        public static string GetValidInput(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             message = string.Concat(message, " ");
@@ -342,6 +348,9 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                 {
+                    if (addLineBefore)
+                        Console.WriteLine("");
+
                     ShowMessage(string.Concat("", message), colour, true, true);
                     input = Console.ReadLine();
                 }
@@ -354,7 +363,7 @@ namespace NextGenSoftware.CLI.Engine
             return input;
         }
 
-        public static long GetValidInputForLong(string message, ConsoleColor colour = MessageColour)
+        public static long GetValidInputForLong(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             bool valid = false;
@@ -367,6 +376,9 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
                         ShowMessage(string.Concat("", message), colour, true, true);
                         input = Console.ReadLine();
                     }
@@ -394,7 +406,7 @@ namespace NextGenSoftware.CLI.Engine
             return result;
         }
 
-        public static decimal GetValidInputForDecimal(string message, ConsoleColor colour = MessageColour)
+        public static decimal GetValidInputForDecimal(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             bool valid = false;
@@ -407,6 +419,12 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
                         ShowMessage(string.Concat("", message), colour, true, true);
                         input = Console.ReadLine();
                     }
@@ -434,7 +452,7 @@ namespace NextGenSoftware.CLI.Engine
             return result;
         }
 
-        public static double GetValidInputForDouble(string message, ConsoleColor colour = MessageColour)
+        public static double GetValidInputForDouble(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             bool valid = false;
@@ -447,6 +465,9 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
                         ShowMessage(string.Concat("", message), colour, true, true);
                         input = Console.ReadLine();
                     }
@@ -474,7 +495,7 @@ namespace NextGenSoftware.CLI.Engine
             return result;
         }
 
-        public static int GetValidInputForInt(string message, bool checkForLowestOrHighestRange = false, int lowest = 0, int highest = 0, ConsoleColor colour = MessageColour)
+        public static int GetValidInputForInt(string message, bool checkForLowestOrHighestRange = false, int lowest = 0, int highest = 0, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             bool valid = false;
@@ -487,6 +508,9 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
                         ShowMessage(string.Concat("", message), colour, true, true);
                         input = Console.ReadLine();
                     }
@@ -525,7 +549,7 @@ namespace NextGenSoftware.CLI.Engine
             return result;
         }
 
-        public static Guid GetValidInputForGuid(string message, ConsoleColor colour = MessageColour)
+        public static Guid GetValidInputForGuid(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             bool valid = false;
@@ -538,6 +562,9 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
                         ShowMessage(string.Concat("", message), colour, true, true);
                         input = Console.ReadLine();
                     }
@@ -562,7 +589,7 @@ namespace NextGenSoftware.CLI.Engine
             return result;
         }
 
-        public static object GetValidInputForEnum(string message, Type enumType, ConsoleColor colour = MessageColour)
+        public static object GetValidInputForEnum(string message, Type enumType, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             object objEnumValue = null;
@@ -574,6 +601,9 @@ namespace NextGenSoftware.CLI.Engine
                
                 while (!valid)
                 {
+                    if (addLineBefore)
+                        Console.WriteLine("");
+
                     ShowMessage(string.Concat("", message), colour, true, true);
                     input = Console.ReadLine();
 
@@ -597,7 +627,47 @@ namespace NextGenSoftware.CLI.Engine
             return objEnumValue;
         }
 
-        public static string GetValidFolder(string message, bool createIfDoesNotExist = true, string baseAddress = "", ConsoleColor colour = MessageColour)
+        public static DateTime GetValidInputForDate(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
+        {
+            string input = "";
+            bool valid = false;
+            DateTime result = DateTime.MinValue;
+            message = string.Concat(message, " ");
+
+            try
+            {
+                while (!valid)
+                {
+                    while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
+                    {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
+                        ShowMessage(string.Concat("", message), colour, true, true);
+                        input = Console.ReadLine();
+                    }
+
+                    if (input.ToLower() == "exit" || input.ToLower() == "none")
+                        break;
+
+                    if (DateTime.TryParse(input, out result))
+                        valid = true;
+                    else
+                    {
+                        ShowErrorMessage("Invalid Date!");
+                        input = "";
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                HandleError("Error occured in CLIEngine.GetValidInputForDate method.", ex);
+            }
+
+            return result;
+        }
+
+        public static string GetValidFolder(string message, bool createIfDoesNotExist = true, string baseAddress = "", ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             bool valid = false;
@@ -609,6 +679,9 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
                         ShowMessage(string.Concat("", message), colour, true, true);
                         input = Console.ReadLine();
                     }
@@ -651,7 +724,7 @@ namespace NextGenSoftware.CLI.Engine
         }
 
         //public static string GetValidFile(string message, string baseAddress = "", string defaultPath = "")
-        public static string GetValidFile(string message, string baseAddress = "", ConsoleColor colour = MessageColour)
+        public static string GetValidFile(string message, string baseAddress = "", ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             bool valid = false;
@@ -664,6 +737,9 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
                         ShowMessage(string.Concat("", message), true, true);
                         input = Console.ReadLine();
                     }
@@ -698,7 +774,7 @@ namespace NextGenSoftware.CLI.Engine
             return null;
         }
 
-        public static async Task<Uri> GetValidURIAsync(string message, bool checkFileExists = true, ConsoleColor colour = MessageColour)
+        public static async Task<Uri> GetValidURIAsync(string message, bool checkFileExists = true, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string input = "";
             bool valid = false;
@@ -711,6 +787,9 @@ namespace NextGenSoftware.CLI.Engine
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                     {
+                        if (addLineBefore)
+                            Console.WriteLine("");
+
                         ShowMessage(string.Concat("", message), colour, true, true);
                         input = Console.ReadLine();
                     }
@@ -758,7 +837,7 @@ namespace NextGenSoftware.CLI.Engine
         //    return GetConfirmation(message, MessageColour);
         //}
 
-        public static bool GetConfirmation(string message, ConsoleColor colour = MessageColour)
+        public static bool GetConfirmation(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             bool validKey = false;
             bool confirm = false;
@@ -768,6 +847,9 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (!validKey)
                 {
+                    if (addLineBefore)
+                        Console.WriteLine("");
+
                     ShowMessage(message, colour, true, true);
                     ConsoleKey key = Console.ReadKey().Key;
 
@@ -793,13 +875,16 @@ namespace NextGenSoftware.CLI.Engine
             return confirm;
         }
 
-        public static string GetValidInputForEmail(string message)
+        public static string GetValidInputForEmail(string message, bool addLineBefore = false)
         {
             bool emailValid = false;
             string email = "";
 
             while (!emailValid)
             {
+                if (addLineBefore)
+                    Console.WriteLine("");
+
                 ShowMessage(string.Concat("", message), true, true);
                 email = Console.ReadLine();
 
@@ -812,13 +897,16 @@ namespace NextGenSoftware.CLI.Engine
             return email;
         }
 
-        public static string GetValidPassword(string message = "What is the password you wish to use? ", string confirmMessage = "Please confirm password: ", ConsoleColor colour = MessageColour)
+        public static string GetValidPassword(string message = "What is the password you wish to use? ", string confirmMessage = "Please confirm password: ", ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string password = "";
             string password2 = "";
 
             try
             {
+                if (addLineBefore)
+                    Console.WriteLine("");
+
                 ShowMessage("", false);
 
                 while ((string.IsNullOrEmpty(password) && string.IsNullOrEmpty(password2)) || password != password2)
@@ -838,7 +926,7 @@ namespace NextGenSoftware.CLI.Engine
             return password;
         }
 
-        public static string ReadPassword(string message, ConsoleColor colour = MessageColour)
+        public static string ReadPassword(string message, ConsoleColor colour = MessageColour, bool addLineBefore = false)
         {
             string password = "";
             ConsoleKey key;
@@ -847,6 +935,9 @@ namespace NextGenSoftware.CLI.Engine
             {
                 while (string.IsNullOrEmpty(password) && string.IsNullOrWhiteSpace(password))
                 {
+                    if (addLineBefore)
+                        Console.WriteLine("");
+
                     ShowMessage(string.Concat("", message), colour, true, true);
 
                     do
@@ -877,13 +968,16 @@ namespace NextGenSoftware.CLI.Engine
             return password;
         }
 
-        public static void GetValidColour(ref ConsoleColor favColour, ref ConsoleColor cliColour, ConsoleColor messageColour = MessageColour)
+        public static void GetValidColour(ref ConsoleColor favColour, ref ConsoleColor cliColour, ConsoleColor messageColour = MessageColour, bool addLineBefore = false)
         {
             try
             {
                 bool colourSet = false;
                 while (!colourSet)
                 {
+                    if (addLineBefore)
+                        Console.WriteLine("");
+
                     ShowMessage("What is your favourite colour? ", messageColour, true, true);
                     string colour = Console.ReadLine();
                     colour = ExtensionMethods.ToPascalCase(colour);
