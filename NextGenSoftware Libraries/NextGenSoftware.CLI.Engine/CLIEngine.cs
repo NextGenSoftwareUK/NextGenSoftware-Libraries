@@ -1059,6 +1059,16 @@ namespace NextGenSoftware.CLI.Engine
             }
         }
 
+        public static void DisplayProperty(string heading, string value, int displayFieldLength, bool displayColon = true)
+        {
+            string colon = ":";
+
+            if (!displayColon)
+                colon = "";
+
+            ShowMessage(string.Concat($"{heading}{colon}".PadRight(displayFieldLength), value), false);
+        }
+
         //public static void ShowProgressBar(string message, int maxTicks, ConsoleColor colour = ConsoleColor.Yellow)
         //{
         //    if (_progressBar == null)
