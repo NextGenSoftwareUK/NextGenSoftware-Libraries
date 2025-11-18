@@ -15,14 +15,21 @@ namespace NextGenSoftware.Utilities
 
         public static string PrivateKeyToAddress(string privateKey)
         {
-            var bitcoinPrivateKey = new BitcoinSecret(privateKey, Network.Main);
+            //try
+            //{
+                var bitcoinPrivateKey = new BitcoinSecret(privateKey, Network.Main);
 
-            string hex = bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy).ScriptPubKey.ToHex();
-            string str = bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy).ScriptPubKey.ToString();
-            string hash = bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy).ScriptPubKey.Hash.ToString();
-            var address = bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy);
+                string hex = bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy).ScriptPubKey.ToHex();
+                string str = bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy).ScriptPubKey.ToString();
+                string hash = bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy).ScriptPubKey.Hash.ToString();
+                var address = bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy);
 
-            return bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy).ScriptPubKey.ToHex();
+                return bitcoinPrivateKey.GetAddress(ScriptPubKeyType.Legacy).ScriptPubKey.ToHex();
+            //}
+            //catch (Exception e)
+            //{
+            //    return null;
+            //}
         }
 
         public static string PublicKeyToAddress(string pubKeyHex)
