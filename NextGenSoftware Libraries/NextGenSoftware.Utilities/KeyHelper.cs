@@ -7,7 +7,7 @@ namespace NextGenSoftware.Utilities
 {
     public static class KeyHelper
     {
-        public class KeyValuePairAndWallet
+        public class KeyPairAndWallet : IKeyPairAndWallet
         {
             public string PublicKey { get; set; }
             public string PrivateKey { get; set; }
@@ -15,7 +15,7 @@ namespace NextGenSoftware.Utilities
             public string WalletAddressSegwitP2SH { get; set; }
         }
 
-        public static KeyValuePairAndWallet GenerateKeyValuePairAndWalletAddress()
+        public static IKeyPairAndWallet GenerateKeyValuePairAndWalletAddress()
         {
             // 1. Generate a new random private key
             // A private key is a 256-bit number (32 bytes)
@@ -53,7 +53,7 @@ namespace NextGenSoftware.Utilities
             //BitcoinAddress bech32Address = publicKey.GetAddress(ScriptPubKeyType.WitnessV0Only, Network.Main);
             //Console.WriteLine($"Wallet Address (Bech32): {bech32Address}");
 
-            return new KeyValuePairAndWallet()
+            return new KeyPairAndWallet()
             {
                 PrivateKey = privateKeyHex,
                 PublicKey = publicKeyHex,
