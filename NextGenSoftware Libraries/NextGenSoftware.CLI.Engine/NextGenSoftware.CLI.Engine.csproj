@@ -63,6 +63,10 @@
     <PackageReference Include="Colorful.Console" Version="1.2.15" />
     <PackageReference Include="ConsoleTables" Version="2.6.2" />
     <PackageReference Include="ShellProgressBar" Version="5.2.0" />
+    <!-- Override transitive refs from Colorful.Console to avoid NU1605 package downgrade -->
+    <PackageReference Include="System.Collections" Version="4.3.0" />
+    <PackageReference Include="System.Diagnostics.Debug" Version="4.3.0" />
+    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
   </ItemGroup>
 
   <ItemGroup>
