@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Threading;
 using NextGenSoftware.CLI.Engine;
@@ -170,7 +170,7 @@ namespace NextGenSoftware.Logging
                             }
                             break;
                         }
-                        catch (IOException e) when (i <= NumberOfRetriesToLogToFile)
+                        catch (IOException) when (i <= NumberOfRetriesToLogToFile)
                         {
                             Thread.Sleep(RetryLoggingToFileEverySeconds * 1000);
                         }

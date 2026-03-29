@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -34,6 +34,29 @@ namespace NextGenSoftware.CLI.Engine
         public const ConsoleColor MessageColour = ConsoleColor.Yellow;
         public static ConsoleColor WorkingMessageColour { get; set; } = ConsoleColor.Yellow;
         public static bool SupressConsoleLogging { get; set; } = false;
+
+        /// <summary>When true, <see cref="GetValidInput"/> and related methods throw <see cref="CLIEngineNonInteractiveInputRequiredException"/> instead of reading stdin.</summary>
+        public static bool NonInteractive { get; set; }
+
+        /// <summary>When true with <see cref="NonInteractive"/>, <see cref="GetConfirmation"/> returns true (auto-yes). Use with care for destructive operations.</summary>
+        public static bool AssumeYes { get; set; }
+
+        /// <summary>When true, machine-oriented output may be used by host apps (STAR CLI implements JSON lines/objects on top).</summary>
+        public static bool JsonOutput { get; set; }
+
+        /// <summary>When true, STAR CLI may skip banners and donation messages.</summary>
+        public static bool Quiet { get; set; }
+
+        /// <summary>0 = unlimited. When &gt; 0, caps STARNET search result rows (per-command trailing limit overrides) and caps how many ambiguous name-match candidates are listed in non-interactive errors.</summary>
+        public static int MaxHolonSearchResults { get; set; }
+
+        private static void ThrowIfNonInteractive(string operationDescription)
+        {
+            if (NonInteractive)
+                throw new CLIEngineNonInteractiveInputRequiredException(
+                    $"Non-interactive mode is active; console input is disabled ({operationDescription}). " +
+                    "Pass the required values via command-line arguments or environment variables documented for shell mode, or omit --non-interactive.");
+        }
 
         //public static ErrorHandlingBehaviour ErrorHandlingBehaviour { get; set; } = ErrorHandlingBehaviour.OnlyThrowExceptionIfNoErrorHandlerSubscribedToOnErrorEvent;
         public static ErrorHandlingBehaviour ErrorHandlingBehaviour
@@ -346,6 +369,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("text input");
                 while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
                 {
                     if (addLineBefore)
@@ -372,6 +396,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("numeric (long) input");
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
@@ -415,6 +440,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("decimal input");
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
@@ -461,6 +487,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("double input");
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
@@ -504,6 +531,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("integer input");
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
@@ -558,6 +586,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("GUID input");
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
@@ -597,6 +626,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("enum input");
                 bool valid = false;
                
                 while (!valid)
@@ -636,6 +666,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("date input");
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
@@ -675,6 +706,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("folder path input");
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
@@ -731,6 +763,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("file path input");
                 message = string.Concat(message, " ");
 
                 while (!valid)
@@ -783,6 +816,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("URI input");
                 while (!valid)
                 {
                     while (string.IsNullOrEmpty(input) || string.IsNullOrWhiteSpace(input) && input != "exit")
@@ -845,6 +879,9 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                if (NonInteractive)
+                    return AssumeYes;
+
                 while (!validKey)
                 {
                     if (addLineBefore)
@@ -877,6 +914,7 @@ namespace NextGenSoftware.CLI.Engine
 
         public static string GetValidInputForEmail(string message, bool addLineBefore = false)
         {
+            ThrowIfNonInteractive("email input");
             bool emailValid = false;
             string email = "";
 
@@ -904,6 +942,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("password input");
                 if (addLineBefore)
                     Console.WriteLine("");
 
@@ -933,6 +972,7 @@ namespace NextGenSoftware.CLI.Engine
 
             try
             {
+                ThrowIfNonInteractive("password input");
                 while (string.IsNullOrEmpty(password) && string.IsNullOrWhiteSpace(password))
                 {
                     if (addLineBefore)
@@ -972,6 +1012,7 @@ namespace NextGenSoftware.CLI.Engine
         {
             try
             {
+                ThrowIfNonInteractive("colour selection");
                 bool colourSet = false;
                 while (!colourSet)
                 {
