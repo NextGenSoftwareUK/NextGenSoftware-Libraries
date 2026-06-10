@@ -11,10 +11,25 @@ namespace NextGenSoftware.Utilities
     {
         public static string ResolveAppRootDirectory()
         {
+            // AppContext.BaseDirectory is the most reliable source for framework-dependent
+            // apps — it returns the directory containing the app DLL, not the dotnet runtime.
+            // Environment.ProcessPath returns the dotnet runtime binary path on Linux
+            // (/usr/share/dotnet/dotnet) for framework-dependent apps, which is wrong.
+            try
+            {
+                string baseDir = AppContext.BaseDirectory?.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                if (!string.IsNullOrEmpty(baseDir))
+                    return Path.GetFullPath(baseDir);
+            }
+            catch { /* non-fatal */ }
+
             try
             {
                 string proc = Environment.ProcessPath;
-                if (!string.IsNullOrEmpty(proc))
+                string procName = Path.GetFileNameWithoutExtension(proc ?? "");
+                // Skip if this is the dotnet runtime binary rather than the app itself
+                if (!string.IsNullOrEmpty(proc) &&
+                    !string.Equals(procName, "dotnet", StringComparison.OrdinalIgnoreCase))
                 {
                     string dir = Path.GetDirectoryName(proc);
                     if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
@@ -32,14 +47,6 @@ namespace NextGenSoftware.Utilities
                     if (!string.IsNullOrEmpty(dir) && Directory.Exists(dir))
                         return Path.GetFullPath(dir);
                 }
-            }
-            catch { /* non-fatal */ }
-
-            try
-            {
-                string baseDir = AppContext.BaseDirectory?.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                if (!string.IsNullOrEmpty(baseDir))
-                    return Path.GetFullPath(baseDir);
             }
             catch { /* non-fatal */ }
 
