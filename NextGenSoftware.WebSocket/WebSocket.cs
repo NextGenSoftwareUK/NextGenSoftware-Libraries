@@ -170,11 +170,16 @@ namespace NextGenSoftware.WebSocket
         }
 
 
-        public async Task ConnectAsync(Uri endpoint)
+        public async Task ConnectAsync(Uri endpoint, Dictionary<string, string> headers = null)
         {
             if (UnityWebSocket == null)
             {
-                UnityWebSocket = new UnityWebSocket(endpoint.AbsoluteUri); //The Unity Web Socket code I ported wraps around the ClientWebSocket.
+                //Some WebSocket servers (e.g. Holochain's admin/app conductor interfaces as of Holochain 0.6.x) reject the
+                //handshake with HTTP 400 if no Origin header is present at all, even when their own origin allow-list is
+                //configured to allow any origin - .NET's ClientWebSocket does not send an Origin header by default since
+                //that is normally a browser-only concept, so callers that need to talk to a server with this requirement
+                //(verified directly against a real Holochain 0.6.1 conductor) should pass one in via the headers param.
+                UnityWebSocket = new UnityWebSocket(endpoint.AbsoluteUri, headers); //The Unity Web Socket code I ported wraps around the ClientWebSocket.
                 UnityWebSocket.OnOpen += UnityWebSocket_OnOpen;
                 UnityWebSocket.OnClose += UnityWebSocket_OnClose;
 
