@@ -10,7 +10,7 @@
 	<Summary>CLI Engine providing CLI utility/helper methods, colour, animation &amp; more!</Summary>
 	<Description>CLI Engine providing CLI utility/helper methods, colour, animation &amp; more!</Description>
 	<PackageProjectUrl>https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK</PackageProjectUrl>
-	<PackageIcon>STARJPG.JPG</PackageIcon>
+	<PackageIcon>OASIS.jpg</PackageIcon>
 	<Authors>David Ellams (NextGen Software Ltd)</Authors>
 	<PackageTags>CLI;Engine</PackageTags>
 	<PackageReleaseNotes>
@@ -38,7 +38,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<None Include="STARJPG.JPG">
+		<None Include="OASIS.jpg">
 			<Pack>True</Pack>
 			<PackagePath>\</PackagePath>
 		</None>

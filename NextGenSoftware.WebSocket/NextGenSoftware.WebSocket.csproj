@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
@@ -10,7 +10,7 @@
 	  <Summary>WebSocket library used for other NextGen Software libraries such as HoloNET.</Summary>
 	  <Description>WebSocket library used for other NextGen Software libraries such as HoloNET.</Description>
 	  <PackageProjectUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</PackageProjectUrl>
-	  <PackageIcon>STARJPG.JPG</PackageIcon>
+	  <PackageIcon>OASIS.jpg</PackageIcon>
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>websocket;net;unity</PackageTags>
 	  <PackageReleaseNotes>
@@ -29,7 +29,7 @@
   </PropertyGroup>
 
 	<ItemGroup>
-		<None Include="STARJPG.JPG">
+		<None Include="OASIS.jpg">
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
 		</None>
