@@ -10,7 +10,7 @@
 	  <Title>NextGen Software Logging NLog Extention</Title>
 	  <Summary>NLog implemention/extention of ILogProvider interface for NextGenSoftware.Logging package.</Summary>
 	  <Description>NLog implemention/extention of ILogProvider interface for NextGenSoftware.Logging package.</Description>
-	  <PackageProjectUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</PackageProjectUrl>
+	  <PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
 	  <PackageIcon>OASIS.jpg</PackageIcon>
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>logging;net;unity</PackageTags>

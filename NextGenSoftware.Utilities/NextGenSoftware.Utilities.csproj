@@ -9,7 +9,7 @@
 	<Title>NextGen Software Utilities</Title>
 	<Summary>Utilities library used by other NextGen Software libraries.</Summary>
 	<Description>Utilities library used by other NextGen Software libraries.</Description>
-	<PackageProjectUrl>https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK</PackageProjectUrl>
+	<PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
 	<PackageIcon>OASIS.jpg</PackageIcon>
 	<Authors>David Ellams (NextGen Software Ltd)</Authors>
 	<PackageTags>utilities;net;unity</PackageTags>

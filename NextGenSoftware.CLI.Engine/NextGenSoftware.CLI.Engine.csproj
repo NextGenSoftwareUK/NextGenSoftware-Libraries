@@ -9,7 +9,7 @@
 	<Title>CLI Engine</Title>
 	<Summary>CLI Engine providing CLI utility/helper methods, colour, animation &amp; more!</Summary>
 	<Description>CLI Engine providing CLI utility/helper methods, colour, animation &amp; more!</Description>
-	<PackageProjectUrl>https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK</PackageProjectUrl>
+	<PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
 	<PackageIcon>OASIS.jpg</PackageIcon>
 	<Authors>David Ellams (NextGen Software Ltd)</Authors>
 	<PackageTags>CLI;Engine</PackageTags>

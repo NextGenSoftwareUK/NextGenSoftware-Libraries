@@ -9,7 +9,7 @@
 		<Title>NextGen Software Logging</Title>
 		<Summary>Lightweight Logging library used for other NextGen Software libraries such as HoloNET &amp; WebSocket.</Summary>
 		<Description>Lightweight Logging library used for other NextGen Software libraries such as HoloNET &amp; WebSocket.</Description>
-		<PackageProjectUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</PackageProjectUrl>
+		<PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
 		<PackageIcon>OASIS.jpg</PackageIcon>
 		<Authors>David Ellams (NextGen Software Ltd)</Authors>
 		<PackageTags>logging;net;unity</PackageTags>

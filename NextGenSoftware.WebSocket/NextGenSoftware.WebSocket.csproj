@@ -9,7 +9,7 @@
 	  <Title>NextGen Software WebSocket</Title>
 	  <Summary>WebSocket library used for other NextGen Software libraries such as HoloNET.</Summary>
 	  <Description>WebSocket library used for other NextGen Software libraries such as HoloNET.</Description>
-	  <PackageProjectUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</PackageProjectUrl>
+	  <PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
 	  <PackageIcon>OASIS.jpg</PackageIcon>
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>websocket;net;unity</PackageTags>
