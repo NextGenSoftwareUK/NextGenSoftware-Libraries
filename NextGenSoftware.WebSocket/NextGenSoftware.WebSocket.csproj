@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
-	  <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+	  <GeneratePackageOnBuild>False</GeneratePackageOnBuild>
 	  <PackageId>NextGenSoftware.WebSocket</PackageId>
 	  <Company>NextGen Software Ltd</Company>
 	  <Product>NextGen Software WebSocket</Product>
@@ -18,7 +18,7 @@
 		  - Upgraded to support newer .NET while remaining compatible with older consumers.
 		</PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
-	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
+	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</RepositoryUrl>
 	  <Copyright>Copyright © NextGen Software Ltd 2022 - 2024</Copyright>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
