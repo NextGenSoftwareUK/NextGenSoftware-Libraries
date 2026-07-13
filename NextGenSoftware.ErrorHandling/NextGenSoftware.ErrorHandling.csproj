@@ -7,8 +7,8 @@
     <Company>NextGen Software Ltd</Company>
     <Product>NextGen Software Error Handling</Product>
     <Title>NextGen Software Error Handling</Title>
-    <Summary>Lightweight Error Handling library used for other NextGen Software libraries such as HoloNET &amp; WebSocket.</Summary>
-    <Description>Lightweight Error Handling library used for other NextGen Software libraries such as HoloNET &amp; WebSocket.</Description>
+    <Summary>Structured error handling and result types for the OASIS and HoloNET ecosystems. Consistent error propagation, logging integration, OASISResult patterns. https://oasisomniverse.one</Summary>
+    <Description>Provides structured error handling primitives, exception wrappers, and result type utilities used across the OASIS and HoloNET ecosystems. Enables consistent error propagation, structured logging of exceptions, and the OASISResult pattern for clean, null-safe async API responses. Part of the OASIS Omniverse ecosystem at https://oasisomniverse.one -- Source: https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</Description>
     <PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
     <PackageIcon>OASIS.jpg</PackageIcon>
     <Authors>David Ellams (NextGen Software Ltd)</Authors>
@@ -17,8 +17,8 @@
       - Multi-target net5.0, net8.0 and net9.0 to maintain compatibility across workspace.
     </PackageReleaseNotes>
     <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
-    <Copyright>Copyright © NextGen Software Ltd 2024.</Copyright>
+    <RepositoryUrl>https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</RepositoryUrl>
+    <Copyright>Copyright © NextGen Software Ltd 2019 - 2026</Copyright>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

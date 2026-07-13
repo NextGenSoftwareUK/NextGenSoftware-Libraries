@@ -19,8 +19,8 @@
 		  - Upgraded to work with the latest changes/improvements to the NextGenSoftware.Logging lib (v2.0+).
 	  </PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
-	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
-	  <Copyright>Copyright © NextGen Software Ltd 2022 - 2024</Copyright>
+	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</RepositoryUrl>
+	  <Copyright>Copyright © NextGen Software Ltd 2019 - 2026</Copyright>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>

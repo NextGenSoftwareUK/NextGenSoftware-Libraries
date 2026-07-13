@@ -7,8 +7,8 @@
 		<Company>NextGen Software Ltd</Company>
 		<Product>NextGen Software Logging</Product>
 		<Title>NextGen Software Logging</Title>
-		<Summary>Lightweight Logging library used for other NextGen Software libraries such as HoloNET &amp; WebSocket.</Summary>
-		<Description>Lightweight Logging library used for other NextGen Software libraries such as HoloNET &amp; WebSocket.</Description>
+		<Summary>Flexible, provider-agnostic logging for the OASIS and HoloNET ecosystems. Console, file, NLog, and custom providers. .NET 8/9/10. https://oasisomniverse.one</Summary>
+		<Description>A flexible, pluggable logging library with a clean ILogger/ILogProvider abstraction used across the entire NextGen Software ecosystem (OASIS, HoloNET, STAR). Supports multiple simultaneous log providers -- console, file, NLog, and custom implementations. Configurable log levels, formatting, and async log dispatch. Part of the OASIS Omniverse ecosystem at https://oasisomniverse.one -- Source: https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</Description>
 		<PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
 		<PackageIcon>OASIS.jpg</PackageIcon>
 		<Authors>David Ellams (NextGen Software Ltd)</Authors>
@@ -17,8 +17,8 @@
 			- Multi-target net5.0, net8.0 and net9.0 for compatibility.
 		</PackageReleaseNotes>
 		<RepositoryType>git</RepositoryType>
-		<RepositoryUrl>https://github.com/NextGenSoftwareUK/holochain-client-csharp</RepositoryUrl>
-		<Copyright>Copyright © NextGen Software Ltd 2022 - 2044</Copyright>
+		<RepositoryUrl>https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</RepositoryUrl>
+		<Copyright>Copyright © NextGen Software Ltd 2019 - 2026</Copyright>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
