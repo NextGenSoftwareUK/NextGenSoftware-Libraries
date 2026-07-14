@@ -1,29 +1,36 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 	<!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
 	<PackageId>NextGenSoftware.CLI.Engine</PackageId>
 	<Company>NextGen Software Ltd</Company>
 	<Product>CLI Engine</Product>
 	<Title>CLI Engine</Title>
-	<Summary>CLI Engine providing CLI utility/helper methods, colour, animation &amp; more!</Summary>
-	<Description>CLI Engine providing CLI utility/helper methods, colour, animation &amp; more!</Description>
+	<Summary>A feature-rich CLI engine providing colour output, animations, progress bars, ASCII art, working-message spinners, formatted tables, and more — the CLI backbone of the OASIS Omniverse ecosystem.</Summary>
+	<Description>A feature-rich CLI engine providing colour output, animations, progress bars, ASCII art, working-message spinners, formatted tables, and more — the CLI backbone of the entire OASIS Omniverse ecosystem. Used internally by HoloNET, the OASIS API (85+ packages), STAR ODK, and OurWorld. Easy to drop into any .NET app needing rich CLI output. Part of the OASIS Omniverse at https://oasisomniverse.one -- Source: https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</Description>
 	<PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
 	<PackageIcon>OASIS.jpg</PackageIcon>
 	<Authors>David Ellams (NextGen Software Ltd)</Authors>
 	<PackageTags>CLI;Engine</PackageTags>
-	<PackageReleaseNotes>
-		- Upgraded to .NET 8.
-		- Added BeginWorkingMessage and EndWorkingMessage making it easier to show a working animation/message before a long operation starts and then when EndWorkingMessage is called the animation is ended and a DONE is showed at the end of the working message on the same line.
-		- Added nextMessageOnSameLine to ShowMessage methods.
-		- Added SupressConsoleLogging property to allow console logging to be toggled on/off.
-		- Integrated the new NextGenSoftware.ErrorHandling lib.
-		- Improved error handling/robustness.
-		- Improved compatability for other platforms.
-		- Various bugs fixed.
-		- Misc other improvements.
-	</PackageReleaseNotes>
+	<PackageReleaseNotes>## v2.0.1 — OASIS Omniverse Reboot (2026)
+
+Part of the biggest NextGen Software release in years! The full OASIS Omniverse ecosystem — powering Our World, the OASIS API (85+ NuGet packages), HoloNET (Holochain .NET client), STAR ODK, and more — has been fully relaunched and rebranded at https://oasisomniverse.one
+
+After years of continuous development this is the first major v2 release, representing a complete overhaul and modernisation of the entire NextGen Software foundation.
+
+### What's New in v2.0.1
+- Added .NET 10 support: now multi-targeting net8.0, net9.0, and net10.0 for future-proof compatibility
+- Copyright updated: NextGen Software Ltd 2019 - 2026
+- Part of the unified OASIS Omniverse ecosystem at https://oasisomniverse.one
+- Added BeginWorkingMessage/EndWorkingMessage for animated long-operation feedback with inline DONE confirmation
+- Added nextMessageOnSameLine to all ShowMessage overloads
+- Added SupressConsoleLogging property to toggle console output at runtime
+- Integrated NextGenSoftware.ErrorHandling for structured exception reporting
+- Improved cross-platform rendering compatibility (Linux, macOS, Windows)
+- Significantly improved error handling, robustness, and API consistency
+- Multiple bug fixes and stability improvements
+- Open source under MIT licence — https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
 	<RepositoryUrl>https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</RepositoryUrl>
 	<Copyright>Copyright © NextGen Software Ltd 2019 - 2026</Copyright>

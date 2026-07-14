@@ -1,23 +1,34 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <PackageId>NextGenSoftware.Logging.NLog</PackageId>
 	  <Company>NextGen Software Ltd</Company>
 	  <Product>NextGen Software Logging NLog Extention</Product>
 	  <Title>NextGen Software Logging NLog Extention</Title>
-	  <Summary>NLog implemention/extention of ILogProvider interface for NextGenSoftware.Logging package.</Summary>
-	  <Description>NLog implemention/extention of ILogProvider interface for NextGenSoftware.Logging package.</Description>
+	  <Summary>NLog implementation of the NextGenSoftware.Logging ILogProvider interface — drop-in NLog integration for any OASIS or HoloNET project. Supports all NLog targets, layouts, and rule-based configuration. Part of the OASIS Omniverse ecosystem at https://oasisomniverse.one — Source: https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</Summary>
+	  <Description>NLog implementation of the NextGenSoftware.Logging ILogProvider interface — drop-in NLog integration for any OASIS or HoloNET project. Supports all NLog targets, layouts, and rule-based configuration. Part of the OASIS Omniverse ecosystem at https://oasisomniverse.one — Source: https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</Description>
 	  <PackageProjectUrl>https://oasisomniverse.one</PackageProjectUrl>
 	  <PackageIcon>OASIS.jpg</PackageIcon>
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>logging;net;unity</PackageTags>
-	  <PackageReleaseNotes>
-		  - Upgraded to .NET 8.
-		  - Upgraded to work with the latest changes/improvements to the NextGenSoftware.Logging lib (v2.0+).
-	  </PackageReleaseNotes>
+	  <PackageReleaseNotes>## v2.0.1 — OASIS Omniverse Reboot (2026)
+
+Part of the biggest NextGen Software release in years! The full OASIS Omniverse ecosystem — powering Our World, the OASIS API (85+ NuGet packages), HoloNET (Holochain .NET client), STAR ODK, and more — has been fully relaunched and rebranded at https://oasisomniverse.one
+
+After years of continuous development this is the first major v2 release, representing a complete overhaul and modernisation of the entire NextGen Software foundation.
+
+### What's New in v2.0.1
+- Added .NET 10 support: now multi-targeting net8.0, net9.0, and net10.0 for future-proof compatibility
+- Copyright updated: NextGen Software Ltd 2019 - 2026
+- Part of the unified OASIS Omniverse ecosystem at https://oasisomniverse.one
+- Significantly improved error handling, robustness, and API consistency
+- Full alignment with the new OASIS Omniverse architecture (WEB4 through WEB10 API tiers)
+- All packages updated with correct metadata, repository URLs, and project URLs
+- Multiple bug fixes and stability improvements
+- Open source under MIT licence -- https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</PackageReleaseNotes>
 	  <RepositoryType>git</RepositoryType>
 	  <RepositoryUrl>https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</RepositoryUrl>
 	  <Copyright>Copyright © NextGen Software Ltd 2019 - 2026</Copyright>

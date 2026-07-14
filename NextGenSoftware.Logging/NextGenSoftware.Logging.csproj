@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
 		<!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
 		<PackageId>NextGenSoftware.Logging</PackageId>
 		<Company>NextGen Software Ltd</Company>
@@ -14,7 +14,21 @@
 		<Authors>David Ellams (NextGen Software Ltd)</Authors>
 		<PackageTags>logging;net;unity</PackageTags>
 		<PackageReleaseNotes>
-			- Multi-target net5.0, net8.0 and net9.0 for compatibility.
+			## v2.0.1 — OASIS Omniverse Reboot (2026)
+
+Part of the biggest NextGen Software release in years! The full OASIS Omniverse ecosystem — powering Our World, the OASIS API (85+ NuGet packages), HoloNET (Holochain .NET client), STAR ODK, and more — has been fully relaunched and rebranded at https://oasisomniverse.one
+
+After years of continuous development this is the first major v2 release, representing a complete overhaul and modernisation of the entire NextGen Software foundation.
+
+### What's New in v2.0.1
+- Added .NET 10 support: now multi-targeting net8.0, net9.0, and net10.0 for future-proof compatibility
+- Copyright updated: NextGen Software Ltd 2019 - 2026
+- Part of the unified OASIS Omniverse ecosystem at https://oasisomniverse.one
+- Significantly improved error handling, robustness, and API consistency
+- Full alignment with the new OASIS Omniverse architecture (WEB4 through WEB10 API tiers)
+- All packages updated with correct metadata, repository URLs, and project URLs
+- Multiple bug fixes and stability improvements
+- Open source under MIT licence — https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries
 		</PackageReleaseNotes>
 		<RepositoryType>git</RepositoryType>
 		<RepositoryUrl>https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</RepositoryUrl>
