@@ -25,7 +25,7 @@
 		- Misc other improvements.
 	</PackageReleaseNotes>
 	<RepositoryType>git</RepositoryType>
-	<RepositoryUrl>https://github.com/NextGenSoftwareUK/Our-World-OASIS-API-HoloNET-HoloUnity-And-.NET-HDK</RepositoryUrl>
+	<RepositoryUrl>https://github.com/NextGenSoftwareUK/NextGenSoftware-Libraries</RepositoryUrl>
 	<Copyright>Copyright © NextGen Software Ltd 2019 - 2026</Copyright>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
 	<!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
