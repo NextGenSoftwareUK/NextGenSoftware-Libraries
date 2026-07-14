@@ -53,7 +53,7 @@ After years of continuous development this is the first major v2 release, repres
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="README.md">
+    <None Include="README.md">
       <PackagePath>\</PackagePath>
       <Pack>True</Pack>
     </None>
