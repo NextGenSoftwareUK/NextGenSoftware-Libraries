@@ -97,7 +97,14 @@ namespace NextGenSoftware.Utilities
 
         private static byte[] HexToBytes(string hex)
         {
-            return Convert.FromHexString(hex);
+            if (hex == null)
+                throw new ArgumentNullException(nameof(hex));
+            if ((hex.Length & 1) != 0)
+                throw new ArgumentException("Invalid hex string length.", nameof(hex));
+            byte[] bytes = new byte[hex.Length / 2];
+            for (int i = 0; i < bytes.Length; i++)
+                bytes[i] = Convert.ToByte(hex.Substring(i * 2, 2), 16);
+            return bytes;
 
             //if (hex.Length % 2 != 0)
             //    throw new ArgumentException("Invalid hex string length.");

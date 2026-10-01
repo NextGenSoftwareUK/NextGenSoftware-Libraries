@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
 
 namespace NextGenSoftware.Utilities
 {
@@ -25,7 +26,12 @@ namespace NextGenSoftware.Utilities
 
             try
             {
-                string proc = Environment.ProcessPath;
+                string proc =
+#if NETSTANDARD2_1
+                    System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
+#else
+                    Environment.ProcessPath;
+#endif
                 string procName = Path.GetFileNameWithoutExtension(proc ?? "");
                 // Skip if this is the dotnet runtime binary rather than the app itself
                 if (!string.IsNullOrEmpty(proc) &&
@@ -97,9 +103,9 @@ namespace NextGenSoftware.Utilities
                 if (string.IsNullOrEmpty(profile))
                     profile = Environment.GetEnvironmentVariable("HOME") ?? Environment.GetEnvironmentVariable("USERPROFILE") ?? "";
 
-                if (OperatingSystem.IsWindows())
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                     local = Path.Combine(profile, "AppData", "Local");
-                else if (OperatingSystem.IsMacOS())
+                else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                     local = Path.Combine(profile, "Library", "Application Support");
                 else
                     local = Path.Combine(profile, ".local", "share");

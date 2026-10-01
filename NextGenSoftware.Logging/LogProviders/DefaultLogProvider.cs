@@ -3,7 +3,6 @@ using System.IO;
 using System.Threading;
 using NextGenSoftware.CLI.Engine;
 using NextGenSoftware.ErrorHandling;
-using NextGenSoftware.WebSocket;
 
 namespace NextGenSoftware.Logging
 {

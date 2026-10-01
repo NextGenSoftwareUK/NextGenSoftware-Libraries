@@ -91,8 +91,8 @@ namespace NextGenSoftware.Utilities
             try
             {
                 using var rsa = new RSACryptoServiceProvider();
-                //rsa.ImportFromPem(File.ReadAllText("public_key.pem").AsSpan());
-                rsa.ImportFromPem(publicKeyContent);
+                string base64 = Regex.Replace(publicKeyContent, "-----BEGIN PUBLIC KEY-----|-----END PUBLIC KEY-----|\\s", "");
+                rsa.ImportSubjectPublicKeyInfo(Convert.FromBase64String(base64), out _);
                 return true;
             }
             catch

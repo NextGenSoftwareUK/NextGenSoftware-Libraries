@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<TargetFrameworks>netstandard2.1;net8.0;net9.0;net10.0</TargetFrameworks>
 		<!--<GeneratePackageOnBuild>True</GeneratePackageOnBuild>-->
 		<PackageId>NextGenSoftware.Logging</PackageId>
 		<Company>NextGen Software Ltd</Company>
@@ -50,6 +50,7 @@ After years of continuous development this is the first major v2 release, repres
 
 	<ItemGroup>
 	  <ProjectReference Include="..\NextGenSoftware.CLI.Engine\NextGenSoftware.CLI.Engine.csproj" />
+	  <ProjectReference Include="..\NextGenSoftware.ErrorHandling\NextGenSoftware.ErrorHandling.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
