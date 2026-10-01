@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace NextGenSoftware.WebSocket
+namespace NextGenSoftware.Logging
 {
     public class LoggingException : Exception
     {       

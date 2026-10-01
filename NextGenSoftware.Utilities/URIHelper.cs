@@ -24,11 +24,13 @@ namespace NextGenSoftware.Utilities
             {
                 return false;
             }
+#if !NETSTANDARD2_1
             catch (HttpRequestException e)
                 when (e.StatusCode.HasValue && (int)e.StatusCode.Value > 500)
             {
                 return true;
             }
+#endif
             catch (Exception e)
             {
                 return false;
