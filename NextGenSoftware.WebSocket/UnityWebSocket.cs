@@ -481,7 +481,8 @@ namespace NextGenSoftware.WebSocket
                 OnOpen?.Invoke();
 
                 //await Receive();
-                Receive();
+                // Intentional fire-and-forget receive loop; Receive handles its own exceptions.
+                _ = Receive();
             }
             catch (Exception ex)
             {

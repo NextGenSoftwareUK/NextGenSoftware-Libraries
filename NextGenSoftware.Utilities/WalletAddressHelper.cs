@@ -57,7 +57,8 @@ namespace NextGenSoftware.Utilities
 
 
 
-                Console.WriteLine($"Bitcoin Address: {address}");
+                // Unreachable after the return above (CS0162); kept for reference.
+                //Console.WriteLine($"Bitcoin Address: {address}");
             }
             catch (Exception ex)
             {

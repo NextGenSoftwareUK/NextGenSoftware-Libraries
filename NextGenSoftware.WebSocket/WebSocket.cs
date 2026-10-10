@@ -195,7 +195,7 @@ namespace NextGenSoftware.WebSocket
         {
             if (UnityWebSocket != null)
             {
-                UnityWebSocket.Close();
+                await UnityWebSocket.Close();
             }
         }
 

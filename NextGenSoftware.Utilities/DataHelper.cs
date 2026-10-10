@@ -6,16 +6,25 @@ namespace NextGenSoftware.Utilities
     {
         public static string ConvertBinaryDataToString(byte[] data, bool ignoreEmptyByte = true)
         {
-            string result = "";
+            // StringBuilder: per-byte string.Concat was O(n^2) and effectively hung on multi-MB payloads
+            // (e.g. a Holochain full-state dump). Empty input used to throw on Substring(1).
+            if (data == null || data.Length == 0)
+                return "";
+
+            StringBuilder sb = new StringBuilder(data.Length * 4);
 
             foreach (byte b in data)
             {
                 if ((ignoreEmptyByte && b > 0) || !ignoreEmptyByte)
-                    result = string.Concat(result, ",", b.ToString());
+                {
+                    if (sb.Length > 0)
+                        sb.Append(',');
+
+                    sb.Append(b);
+                }
             }
 
-            result = result.Substring(1, result.Length - 1);
-            return result.Trim();
+            return sb.ToString();
         }
 
         public static string DecodeBinaryDataAsUTF8(byte[] data)
