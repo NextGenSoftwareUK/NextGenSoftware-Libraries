@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Text;
@@ -328,13 +328,23 @@ namespace NextGenSoftware.WebSocket
 
         public async Task SendRawDataAsync(byte[] data)
         {
+            await TrySendRawDataAsync(data);
+        }
+
+        /// <summary>
+        /// Sends <paramref name="data"/> and returns whether it was sent. SendRawDataAsync reported failures only through
+        /// OnError/HandleError and returned normally, so callers couldn't tell; and a failure in its own logging skipped the send.
+        /// </summary>
+        public async Task<bool> TrySendRawDataAsync(byte[] data)
+        {
             try
             {
                 string bytesDecoded = DataHelper.DecodeBinaryDataAsUTF8(data);
                 string bytesAsString = DataHelper.ConvertBinaryDataToString(data);
 
-                Logger.Log($"Sending Raw Data...", LogType.Info);
-                Logger.Log($"Bytes: {bytesDecoded} ({bytesAsString})", LogType.Debug);
+                //Logger.Log($"Sending Raw Data...", LogType.Info);
+                //Logger.Log($"Bytes: {bytesDecoded} ({bytesAsString})", LogType.Debug);
+                try { Logger.Log($"Sending Raw Data...", LogType.Info); Logger.Log($"Bytes: {bytesDecoded} ({bytesAsString})", LogType.Debug); } catch { } // logging must not stop the send
 
                 await UnityWebSocket.Send(data);
 
@@ -365,12 +375,14 @@ namespace NextGenSoftware.WebSocket
                 */
 
                 //OnDataSent?.Invoke(this, new DataSentEventArgs { IsCallSuccessful = true, EndPoint = EndPoint,  RawBinaryData = data, RawBinaryDataAsString = bytesAsString, RawBinaryDataDecoded = bytesDecoded });
-                OnDataSent?.Invoke(this, new DataSentEventArgs { EndPoint = EndPoint, RawBinaryData = data, RawBinaryDataAsString = bytesAsString, RawBinaryDataDecoded = bytesDecoded });
-                Logger.Log("Sending Raw Data... Done!", LogType.Info);
+                try { OnDataSent?.Invoke(this, new DataSentEventArgs { EndPoint = EndPoint, RawBinaryData = data, RawBinaryDataAsString = bytesAsString, RawBinaryDataDecoded = bytesDecoded }); } catch { }
+                try { Logger.Log("Sending Raw Data... Done!", LogType.Info); } catch { }
+                return true;
             }
             catch (Exception ex)
             {
                 HandleError("Error occurred in WebSocket.SendRawDataAsync method.", ex);
+                return false;
             }
         }
 
