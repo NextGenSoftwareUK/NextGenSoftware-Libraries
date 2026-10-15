@@ -1,4 +1,4 @@
-﻿
+
 using System;
 using System.Collections.Generic;
 using NextGenSoftware.Logging.Interfaces;
@@ -17,7 +17,8 @@ namespace NextGenSoftware.Logging
             if (LogProviders == null)
                 LogProviders = new List<ILogProvider>();
 
-            LogProviders.Add(logProvider);
+            lock (LogProviders)
+                LogProviders.Add(logProvider);
         }
 
         public void AddLogProviders(IEnumerable<ILogProvider> logProviders)
@@ -25,7 +26,8 @@ namespace NextGenSoftware.Logging
             if (LogProviders == null)
                 LogProviders = new List<ILogProvider>();
 
-            LogProviders.AddRange(logProviders);
+            lock (LogProviders)
+                LogProviders.AddRange(logProviders);
         }
 
         //public void Log(string message, LogType type, bool logOnNewLine = true, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1)
@@ -36,14 +38,35 @@ namespace NextGenSoftware.Logging
 
         public void Log(string message, LogType type, ConsoleColor consoleColour, bool logToFile = true, bool logToConsole = true, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
         {
-            foreach (ILogProvider logger in LogProviders)
-                logger.Log(message, type, logToFile, logToConsole, consoleColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
+            //foreach (ILogProvider logger in LogProviders)
+            //    logger.Log(message, type, logToFile, logToConsole, consoleColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
+            foreach (ILogProvider logger in Snapshot())
+            {
+                try { logger.Log(message, type, logToFile, logToConsole, consoleColour, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine); }
+                catch { } // a faulty provider must not break the caller or the other providers
+            }
         }
 
         public void Log(string message, LogType type, bool logToFile = true, bool logToConsole = true, bool showWorkingAnimation = false, bool noLineBreaks = false, bool insertExtraNewLineAfterLogMessage = false, int? indentLogMessagesBy = 1, bool nextMessageOnSameLine = false)
         {
-            foreach (ILogProvider logger in LogProviders)
-                logger.Log(message, type, logToFile, logToConsole, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
+            //foreach (ILogProvider logger in LogProviders)
+            //    logger.Log(message, type, logToFile, logToConsole, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine);
+            foreach (ILogProvider logger in Snapshot())
+            {
+                try { logger.Log(message, type, logToFile, logToConsole, showWorkingAnimation, noLineBreaks, insertExtraNewLineAfterLogMessage, indentLogMessagesBy, nextMessageOnSameLine); }
+                catch { } // a faulty provider must not break the caller or the other providers
+            }
+        }
+
+        // A copy, so a provider added on another thread while logging doesn't throw "collection was modified".
+        private ILogProvider[] Snapshot()
+        {
+            List<ILogProvider> providers = LogProviders;
+            if (providers == null)
+                return new ILogProvider[0];
+
+            lock (providers)
+                return providers.ToArray();
         }
 
         //public bool ContinueLogging(LogType type)
