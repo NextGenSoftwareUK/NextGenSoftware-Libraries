@@ -117,56 +117,61 @@ namespace NextGenSoftware.Logging
                             if (InsertExtraNewLineAfterLogMessage || insertExtraNewLineAfterLogMessage)
                                 logMessage = String.Concat(logMessage, "\n");
 
-                            string fullFileName = LogFileName;
-                            FileInfo fileInfo = new FileInfo(fullFileName);
+                            // Was: list the whole log directory and stat every file on every single line (to find the newest file), then
+                            // open it shared. With a few hundred log files each line took long enough that HoloNET calls timed out (it
+                            // logs on the WebSocket receive thread), concurrent writers hit IOException and slept a second, and the folder
+                            // grew without limit. Now the current file is remembered, writes are serialised and old files are pruned.
+                            AppendToLogFile(logMessage);
+//                            string fullFileName = LogFileName;
+//                            FileInfo fileInfo = new FileInfo(fullFileName);
 
-                            if (File.Exists(String.Concat(LogDirectory, "\\", LogFileName)))
-                            {
-                                //Need to find the latest file.
-                                DirectoryInfo dirInfo = new DirectoryInfo(LogDirectory);
+//                            if (File.Exists(String.Concat(LogDirectory, "\\", LogFileName)))
+//                            {
+//                                //Need to find the latest file.
+//                                DirectoryInfo dirInfo = new DirectoryInfo(LogDirectory);
 
-                                FileInfo[] files = dirInfo.GetFiles();
-                                DateTime latestWriteTime = DateTime.MinValue;
+//                                FileInfo[] files = dirInfo.GetFiles();
+//                                DateTime latestWriteTime = DateTime.MinValue;
 
-                                foreach (FileInfo file in files)
-                                {
-                                    if (file.LastWriteTime > latestWriteTime)
-                                    {
-                                        fullFileName = file.Name;
-                                        latestWriteTime = file.LastWriteTime;
-                                    }
-                                }
+//                                foreach (FileInfo file in files)
+//                                {
+//                                    if (file.LastWriteTime > latestWriteTime)
+//                                    {
+//                                        fullFileName = file.Name;
+//                                        latestWriteTime = file.LastWriteTime;
+//                                    }
+//                                }
 
-                                fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", LogFileName));
-                                string ext = fileInfo.Extension;
-                                string[] parts = LogFileName.Split('.');
-                                string fileName = parts[0];
+//                                fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", LogFileName));
+//                                string ext = fileInfo.Extension;
+//                                string[] parts = LogFileName.Split('.');
+//                                string fileName = parts[0];
 
-                                fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", fullFileName));
+//                                fileInfo = new FileInfo(String.Concat(LogDirectory, "\\", fullFileName));
 
-                                //If the logfile is over its max size then find the next free filename.
-                                if (fileInfo != null && fileInfo.Length > MaxLogFileSize)
-                                {
-                                    int fileNumber = 2;
-                                    bool foundFreeFile = false;
+//                                //If the logfile is over its max size then find the next free filename.
+//                                if (fileInfo != null && fileInfo.Length > MaxLogFileSize)
+//                                {
+//                                    int fileNumber = 2;
+//                                    bool foundFreeFile = false;
 
-                                    while (!foundFreeFile)
-                                    {
-                                        fullFileName = $"{fileName}{fileNumber}{ext}";
+//                                    while (!foundFreeFile)
+//                                    {
+//                                        fullFileName = $"{fileName}{fileNumber}{ext}";
 
-                                        if (!File.Exists(String.Concat(LogDirectory, "\\", fullFileName)))
-                                            foundFreeFile = true;
-                                        else
-                                            fileNumber++;
-                                    }
-                                }
-                            }
+//                                        if (!File.Exists(String.Concat(LogDirectory, "\\", fullFileName)))
+//                                            foundFreeFile = true;
+//                                        else
+//                                            fileNumber++;
+//                                    }
+//                                }
+//                            }
 
-                            using (var stream = File.Open(String.Concat(LogDirectory, "\\", fullFileName), FileMode.Append, FileAccess.Write, FileShare.Write))
-                            {
-                                using (var writer = new StreamWriter(stream))
-                                    writer.WriteLine(logMessage);
-                            }
+//                            using (var stream = File.Open(String.Concat(LogDirectory, "\\", fullFileName), FileMode.Append, FileAccess.Write, FileShare.Write))
+//                            {
+//                                using (var writer = new StreamWriter(stream))
+//                                    writer.WriteLine(logMessage);
+//                            }
                             break;
                         }
                         catch (IOException) when (i <= NumberOfRetriesToLogToFile)
@@ -179,6 +184,105 @@ namespace NextGenSoftware.Logging
             catch (Exception ex)
             {
                 HandleError("Error occurred in DefaultLogger.Log method.", ex);
+            }
+        }
+
+
+        private static readonly object _logFileLock = new object();
+        private static readonly System.Collections.Generic.Dictionary<string, string> _currentLogFile = new System.Collections.Generic.Dictionary<string, string>();
+
+        /// <summary>
+        /// How many log files (LogFileName, then LogFileName2, 3...) to keep in LogDirectory; older ones are deleted when a new one
+        /// is started. 0 keeps them all. Defaults to 50 (about 50MB with the default MaxLogFileSize).
+        /// </summary>
+        public int MaxLogFiles { get; set; } = 50;
+
+        private void AppendToLogFile(string logMessage)
+        {
+            string directory = string.IsNullOrEmpty(LogDirectory) ? "." : LogDirectory;
+            string key = Path.GetFullPath(Path.Combine(directory, LogFileName));
+
+            lock (_logFileLock)
+            {
+                if (!_currentLogFile.TryGetValue(key, out string current) || !File.Exists(current))
+                    current = FindLatestLogFile(directory);
+
+                if (File.Exists(current) && new FileInfo(current).Length > MaxLogFileSize)
+                {
+                    current = NextFreeLogFile(directory);
+                    PruneLogFiles(directory, current);
+                }
+
+                _currentLogFile[key] = current;
+                File.AppendAllText(current, logMessage + Environment.NewLine);
+            }
+        }
+
+        private (string name, string ext) LogFileParts()
+        {
+            string ext = Path.GetExtension(LogFileName);
+            return (Path.GetFileNameWithoutExtension(LogFileName), ext);
+        }
+
+        private System.Collections.Generic.List<FileInfo> LogFiles(string directory)
+        {
+            (string name, string ext) = LogFileParts();
+            var files = new System.Collections.Generic.List<FileInfo>();
+
+            if (Directory.Exists(directory))
+                foreach (FileInfo file in new DirectoryInfo(directory).GetFiles(name + "*" + ext))
+                {
+                    string suffix = Path.GetFileNameWithoutExtension(file.Name).Substring(name.Length);
+                    if (suffix.Length == 0 || int.TryParse(suffix, out _))
+                        files.Add(file);
+                }
+
+            return files;
+        }
+
+        private string FindLatestLogFile(string directory)
+        {
+            FileInfo latest = null;
+
+            foreach (FileInfo file in LogFiles(directory))
+                if (latest == null || file.LastWriteTime > latest.LastWriteTime)
+                    latest = file;
+
+            return latest != null ? latest.FullName : Path.Combine(directory, LogFileName);
+        }
+
+        private string NextFreeLogFile(string directory)
+        {
+            (string name, string ext) = LogFileParts();
+            int highest = 1;
+
+            foreach (FileInfo file in LogFiles(directory))
+            {
+                string suffix = Path.GetFileNameWithoutExtension(file.Name).Substring(name.Length);
+                if (int.TryParse(suffix, out int n) && n > highest)
+                    highest = n;
+            }
+
+            return Path.Combine(directory, $"{name}{highest + 1}{ext}");
+        }
+
+        private void PruneLogFiles(string directory, string keep)
+        {
+            if (MaxLogFiles <= 0)
+                return;
+
+            var files = LogFiles(directory);
+            files.Sort((a, b) => a.LastWriteTime.CompareTo(b.LastWriteTime));
+
+            // The new file doesn't exist yet, so keep MaxLogFiles - 1 of the existing ones.
+            for (int i = 0; i < files.Count - (MaxLogFiles - 1); i++)
+            {
+                if (string.Equals(files[i].FullName, Path.GetFullPath(keep), StringComparison.OrdinalIgnoreCase))
+                    continue;
+
+                try { files[i].Delete(); }
+                catch (IOException) { } // in use by another process: try again next time
+                catch (UnauthorizedAccessException) { }
             }
         }
 
