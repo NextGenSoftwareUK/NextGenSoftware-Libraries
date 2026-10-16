@@ -13,7 +13,15 @@
 	  <PackageIcon>OASIS.jpg</PackageIcon>
 	  <Authors>David Ellams (NextGen Software Ltd)</Authors>
 	  <PackageTags>websocket;net;unity</PackageTags>
-	  <PackageReleaseNotes>## v2.0.1 — OASIS Omniverse Reboot (2026)
+	  <PackageReleaseNotes>## v2.0.4
+
+- NextGenSoftware.Logging: file logging no longer slows down as log files accumulate (it listed and checked every file in the log folder on every line, so apps that log a lot - like HoloNET, which logs on its WebSocket thread - timed out); writes are serialised in-process; only MaxLogFiles (default 50) log files are kept. Faulty log providers can't break logging (snapshot of providers).
+- NextGenSoftware.WebSocket: the receive loop runs on the thread pool (it inherited the caller's SynchronizationContext, so WPF/WinForms apps handled every message on the UI thread and froze on any blocking call); TrySendRawDataAsync reports send failures instead of throwing.
+- All NextGenSoftware libraries bumped to 2.0.4 together.
+
+---
+
+## v2.0.1 — OASIS Omniverse Reboot (2026)
 
 Part of the biggest NextGen Software release in years! The full OASIS Omniverse ecosystem — powering Our World, the OASIS API (85+ NuGet packages), HoloNET (Holochain .NET client), STAR ODK, and more — has been fully relaunched and rebranded at https://oasisomniverse.one
 
@@ -35,7 +43,7 @@ After years of continuous development this is the first major v2 release, repres
 	  <!--<PackageLicenseExpression>GNU GPLv3</PackageLicenseExpression>-->
 	  <PackageLicenseExpression>MIT</PackageLicenseExpression>
 	  <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-	  <Version>2.0.3</Version>
+	  <Version>2.0.4</Version>
 	  <!--<PackageLicenseFile>..\LICENSE</PackageLicenseFile>-->
   </PropertyGroup>
 
