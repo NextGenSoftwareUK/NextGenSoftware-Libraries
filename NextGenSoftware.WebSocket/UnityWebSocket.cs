@@ -482,7 +482,11 @@ namespace NextGenSoftware.WebSocket
 
                 //await Receive();
                 // Intentional fire-and-forget receive loop; Receive handles its own exceptions.
-                _ = Receive();
+                // On the thread pool: started here directly, it ran on the caller's SynchronizationContext, so in a WPF/WinForms
+                // app every message was processed on the UI thread and any blocking call there (a sync request, .Result) froze
+                // the app, because the reply it waited for could never be read.
+                //_ = Receive();
+                _ = Task.Run(Receive);
             }
             catch (Exception ex)
             {
